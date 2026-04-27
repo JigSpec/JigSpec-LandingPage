@@ -13,14 +13,15 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 - [ ] **CONTENT-02**: Visitor reads a 250–400 word "What is agentic AI" educational section that gives a non-expert a working definition in under 90 seconds, structurally treated (heading + body + a contrast element like a small table or two-column layout) — direct response to the buggerd post-mortem
 - [ ] **CONTENT-03**: Visitor sees a 6-card product grid with **equal visual footprint** for every card, in narrative order: buggerd, scientific paper agent, triage + router bot, always-on recorder + extractor, Agentic Employees, Delegate
 - [ ] **CONTENT-04**: Each product card displays a one-state stage badge (`Shipping` for buggerd, `Probe` for the 4 concept-stage products including Agentic Employees, `Sibling` for Delegate) so visitors can read what's real vs. what's being measured without leaving the grid
-- [ ] **CONTENT-05**: Each product card has a clear primary action: buggerd's CTA links externally to `https://buggerd.com`; the other 5 open the per-card interest form (DEMAND-01)
+- [ ] **CONTENT-05**: The entire surface of every product card is clickable (not just an inline button) and navigates to that card's landing destination: buggerd → `https://buggerd.com` (external, opens in new tab); the 5 concept cards → an on-site product landing page at `/products/[slug]` (CONTENT-09); analytics fires `card:open` (concepts) or `card:cta_external_click` (buggerd) on click
 - [ ] **CONTENT-06**: Visitor sees a "Tell us a problem we should solve" section with copy that frames the form as soliciting demand signal beyond our preconceived cards (not a contact form)
 - [ ] **CONTENT-07**: Page footer contains: link to docs (initially the existing VitePress site at jigspec.com or its preview equivalent; flips to `docs.jigspec.com` at cutover), contact email, copyright, and a link to the GitHub org
 - [ ] **CONTENT-08**: All copy avoids fabricated social proof (no testimonials, no "trusted by" logos, no fake metrics, no "industry-leading" superlatives) — honesty constraint inherited from buggerd and Delegate landings
+- [ ] **CONTENT-09**: Each of the 5 concept cards has its own on-site landing page at `/products/[slug]` rendered from the same `src/content/products/{slug}.md` file via a single `pages/products/[slug].astro` template; the page includes the card's headline + a longer-form description (200–400 words) + an embedded interest form (DEMAND-01) + a back-to-home link; the page reuses Nav/Footer for layout consistency. Buggerd has no such page on this site (its landing is buggerd.com)
 
 ### Demand (the signal-capture mechanism — primary job of the page)
 
-- [ ] **DEMAND-01**: Per-card interest forms exist for all 5 non-buggerd cards (scientific paper agent, triage + router bot, recorder + extractor, Agentic Employees, Delegate); each form is built on PostHog Surveys with a `productId` discriminator, captures email + a **required** qualitative free-text field (one to two sentences on what the visitor would actually use it for), and shows a confirmation state on submit
+- [ ] **DEMAND-01**: Per-card interest forms exist for all 5 non-buggerd cards (scientific paper agent, triage + router bot, recorder + extractor, Agentic Employees, Delegate); each form is built on PostHog Surveys with a `productId` discriminator, captures email + a **required** qualitative free-text field (one to two sentences on what the visitor would actually use it for), and shows a confirmation state on submit. Forms render embedded on each `/products/[slug]` page (CONTENT-09), not as modals on the home page
 - [ ] **DEMAND-02**: The general "Tell us a problem we should solve" form exists separately from the per-card forms; uses bare `posthog.capture('problem_pitch', {...})` (not a Surveys widget); captures email + free-text problem description; same confirmation state pattern
 - [ ] **DEMAND-03**: A demand-ranking metric is committed in writing in the repo (e.g. `docs/demand-metric.md` or in PROJECT.md) before launch, specifying: (a) the formula `1.0×submits + 0.3×opens + 0.1×clicks + 0.05×dwell_seconds`, (b) the gate condition `5 form submits per card OR 4 weeks of traffic, whichever comes first`, and (c) the action that triggers (vertical-pick decision)
 - [ ] **DEMAND-04**: Notification destination wired on day one — Slack webhook OR Zapier-to-Gmail OR equivalent — for both PostHog Surveys submissions and the `problem_pitch` event; weekly calendar reminder also set as a backstop so leads can't accumulate unseen
@@ -104,53 +105,61 @@ Deferred. Tracked but not in current roadmap.
 
 ## Traceability
 
-Empty. Filled by roadmapper in the next phase.
+Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONTENT-01 | TBD | Pending |
-| CONTENT-02 | TBD | Pending |
-| CONTENT-03 | TBD | Pending |
-| CONTENT-04 | TBD | Pending |
-| CONTENT-05 | TBD | Pending |
-| CONTENT-06 | TBD | Pending |
-| CONTENT-07 | TBD | Pending |
-| CONTENT-08 | TBD | Pending |
-| DEMAND-01 | TBD | Pending |
-| DEMAND-02 | TBD | Pending |
-| DEMAND-03 | TBD | Pending |
-| DEMAND-04 | TBD | Pending |
-| DEMAND-05 | TBD | Pending |
-| ANALYTICS-01 | TBD | Pending |
-| ANALYTICS-02 | TBD | Pending |
-| ANALYTICS-03 | TBD | Pending |
-| ANALYTICS-04 | TBD | Pending |
-| ANALYTICS-05 | TBD | Pending |
-| DIAGRAM-01 | TBD | Pending |
-| DIAGRAM-02 | TBD | Pending |
-| DIAGRAM-03 | TBD | Pending |
-| DIAGRAM-04 | TBD | Pending |
-| DIAGRAM-05 | TBD | Pending |
-| VISUAL-01 | TBD | Pending |
-| VISUAL-02 | TBD | Pending |
-| VISUAL-03 | TBD | Pending |
-| VISUAL-04 | TBD | Pending |
-| VISUAL-05 | TBD | Pending |
-| TECH-01 | TBD | Pending |
-| TECH-02 | TBD | Pending |
-| TECH-03 | TBD | Pending |
-| TECH-04 | TBD | Pending |
-| TECH-05 | TBD | Pending |
-| DEPLOY-01 | TBD | Pending |
-| DEPLOY-02 | TBD | Pending |
-| DEPLOY-03 | TBD | Pending |
-| DEPLOY-04 | TBD | Pending |
+| CONTENT-01 | Phase 2 | Pending |
+| CONTENT-02 | Phase 2 | Pending |
+| CONTENT-03 | Phase 2 | Pending |
+| CONTENT-04 | Phase 2 | Pending |
+| CONTENT-05 | Phase 2 | Pending |
+| CONTENT-06 | Phase 2 | Pending |
+| CONTENT-07 | Phase 2 | Pending |
+| CONTENT-08 | Phase 2 | Pending |
+| CONTENT-09 | Phase 2 | Pending |
+| DEMAND-01 | Phase 3 | Pending |
+| DEMAND-02 | Phase 3 | Pending |
+| DEMAND-03 | Phase 3 | Pending |
+| DEMAND-04 | Phase 3 | Pending |
+| DEMAND-05 | Phase 3 | Pending |
+| ANALYTICS-01 | Phase 3 | Pending |
+| ANALYTICS-02 | Phase 3 | Pending |
+| ANALYTICS-03 | Phase 3 | Pending |
+| ANALYTICS-04 | Phase 3 | Pending |
+| ANALYTICS-05 | Phase 3 | Pending |
+| DIAGRAM-01 | Phase 4 | Pending |
+| DIAGRAM-02 | Phase 4 | Pending |
+| DIAGRAM-03 | Phase 4 | Pending |
+| DIAGRAM-04 | Phase 4 | Pending |
+| DIAGRAM-05 | Phase 4 | Pending |
+| VISUAL-01 | Phase 1 | Pending |
+| VISUAL-02 | Phase 1 | Pending |
+| VISUAL-03 | Phase 1 | Pending |
+| VISUAL-04 | Phase 1 | Pending |
+| VISUAL-05 | Phase 4 | Pending |
+| TECH-01 | Phase 1 | Pending |
+| TECH-02 | Phase 2 | Pending |
+| TECH-03 | Phase 2 | Pending |
+| TECH-04 | Phase 2 | Pending |
+| TECH-05 | Phase 1 | Pending |
+| DEPLOY-01 | Phase 1 | Pending |
+| DEPLOY-02 | Phase 1 | Pending |
+| DEPLOY-03 | Phase 1 | Pending |
+| DEPLOY-04 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 36 total
-- Mapped to phases: 0 (filled by roadmapper)
-- Unmapped: 36 ⚠️ (will become 0 after roadmap)
+- v1 requirements: 38 total (37 from initial roadmapper pass + CONTENT-09 added at user's request: per-concept on-site landing pages)
+- Mapped to phases: 38 ✓
+- Unmapped: 0
+
+**Phase distribution:**
+- Phase 1 (Scaffold, Sketches & Visual Shell): 9 requirements (TECH-01, TECH-05, VISUAL-01..04, DEPLOY-01..03)
+- Phase 2 (Content & Static Page): 12 requirements (CONTENT-01..09, TECH-02..04)
+- Phase 3 (Analytics, Forms & Notifications): 10 requirements (ANALYTICS-01..05, DEMAND-01..05)
+- Phase 4 (Diagrams, Polish & Preview Soak): 6 requirements (DIAGRAM-01..05, VISUAL-05)
+- Phase 5 (Apex DNS Cutover): 1 requirement (DEPLOY-04)
 
 ---
 *Requirements defined: 2026-04-27*
-*Last updated: 2026-04-27 after initial definition*
+*Last updated: 2026-04-27 — Traceability filled by roadmapper; coverage 37/37*
