@@ -2,7 +2,7 @@
 
 ## What This Is
 
-The company-level marketing site for JigSpec — the proprietary agentic-AI runtime and product studio behind the open `.pipe.yaml` spec and individual products like `buggerd`. The site introduces JigSpec as a company, explains agentic AI in plain English (anchoring our positioning that *our* agentic recipe is more reliable and autonomous than what's already out there), and surfaces a grid of product candidates — one shipping (buggerd) plus four concept-stage probes — so click and email signal can tell us which vertical to build next. The intended visitor is anyone with a repetitive or research-heavy task they suspect could be done by an autonomous agent: technical founders, ops leads, researchers, freelancers, knowledge workers. This page replaces `jigspec.com` (currently a VitePress docs site) as the apex; the docs migration to a separate subdomain is a known deferred dependency.
+The company-level marketing site for JigSpec — the proprietary agentic-AI runtime and product studio behind the open `.pipe.yaml` spec and individual products like `buggerd`. The site introduces JigSpec as a company, explains agentic AI in plain English (anchoring our positioning that *our* agentic recipe is more reliable and autonomous than what's already out there), and surfaces a grid of product candidates — one shipping (buggerd) plus five concept-stage probes — so click and email signal can tell us which vertical to build next. The intended visitor is anyone with a repetitive or research-heavy task they suspect could be done by an autonomous agent: technical founders, ops leads, researchers, freelancers, knowledge workers. This page replaces `jigspec.com` (currently a VitePress docs site) as the apex; the docs migration to a separate subdomain is a known deferred dependency.
 
 ## Core Value
 
@@ -18,12 +18,13 @@ The company-level marketing site for JigSpec — the proprietary agentic-AI runt
 
 - [ ] Apex hero: tagline ("Solving Real Problems with Agentic AI" or successor) + sub-line that distinguishes JigSpec's reliability/autonomy claim from generic agentic-AI noise
 - [ ] "What is agentic AI" educational section in plain language (anchors the bolder/editorial tech-publication aesthetic and answers the buggerd post-mortem: visitors didn't realize what it was)
-- [ ] Product card grid — equal visual weight, 5 cards:
+- [ ] Product card grid — equal visual weight, 6 cards:
   - buggerd (real product, links to buggerd.com)
   - Scientific paper agent (concept, "interested? tell us")
   - Triage + router bot (concept, "interested? tell us")
   - Always-on recorder + extractor (concept, "interested? tell us")
   - Delegate (concept, "interested? tell us" — sibling project's own landing exists separately)
+  - Agentic Employees (concept, "interested? tell us" — JigSpec's take on the Marblism model: hire named AI agents for functional roles like inbox/SEO/lead-gen/support; reference https://www.marblism.com)
 - [ ] "Tell us a problem we should solve" open-ended email + free-text capture (general demand probe beyond our predefined cards)
 - [ ] Mermaid Diagram 1: How an agentic pipeline runs (input → agent steps → tools → review gates → output) — anchors the reliability/autonomy claim
 - [ ] Mermaid Diagram 2: How JigSpec ships a product to you (your problem → we design pipeline → build → you use it) — process transparency
@@ -52,6 +53,7 @@ The company-level marketing site for JigSpec — the proprietary agentic-AI runt
 - **The "umbrella + flagship" tension was discussed and resolved:** all 5 cards are equal visual weight, and the data the page produces decides which becomes the flagship. The 1 shipping product (buggerd) gets a real CTA but no visual elevation over the concepts.
 - **Competitor positioning research already exists** at `/Users/kjs/Documents/Business/jigspec/competitor_angles.md` — covers LangChain, n8n, Flowise, Dify, Kestra. Our positioning differentiator: those are platforms for *building* AI workflows; we are the company that *ships them as productized services* and is honest about which vertical we're winning vs. probing.
 - **Sibling product surfaces:** `Delegate/` (sibling folder) has its own pre-product interest-gauge landing in flight on a different stack (React + Vite). Its card on this page should respect that — link to its own landing if/when ready, or use a "tell us" form like the other concepts in the meantime.
+- **Audience-overlap watch — Delegate vs. Agentic Employees:** Both cards target small operators (freelancers/consultants for Delegate; founders/SMBs hiring functional AI roles for Agentic Employees). The framings differ — Delegate is "operations layer / agents-as-roles / outcomes-not-tasks," Agentic Employees is the named-persona-per-functional-area model exemplified by Marblism. The page intentionally surfaces both so the demand signal can tell us whether the audience differentiates them or collapses them into one. If demand collapses, that itself is the answer (one card was redundant).
 - **The MIT Sloan articles the user linked** (agentic AI explainer, the emerging agentic enterprise, nine essential questions) are good reference reading for the educational section's voice; they're written for executives who don't yet know what "agentic" means, which mirrors our target visitor.
 - **Lean Labs menu-design article** (https://www.leanlabs.com/blog/website-menu-design-examples) is the user's specified design reference for navigation patterns.
 - **The buggerd post-mortem finding** that visitors didn't realize buggerd was an agentic AI product is the *single most important* piece of UX feedback informing this page. The "what is agentic AI" section, the diagrams, and the consistent reliability/autonomy framing are all direct responses to it.
@@ -62,8 +64,8 @@ The company-level marketing site for JigSpec — the proprietary agentic-AI runt
 - **Hosting**: Vercel + Cloudflare DNS — Same pattern as buggerd; auto-deploy from `main`. Apex DNS swap from current VitePress site is gated on a separate docs-migration phase.
 - **Repo**: GitHub under the existing JigSpec org (parallel to `JigSpec/buggerd`).
 - **Analytics**: PostHog free tier, hybrid privacy mode — anonymous events by default, identify on form submit. No persistent cookies pre-submit, no cookie banner required.
-- **Forms**: PostHog Surveys for email capture (free tier covers it; trade-off accepted: no inbox notifications, dashboard-checking required). Tally is the documented fallback if PostHog Surveys friction proves unworkable.
-- **Visual identity**: Bolder & editorial — tech-publication aesthetic. Strong typography, magazine-like hierarchy, opinionated colors. Distinct from buggerd's tighter zinc/emerald/monospace look so the company brand isn't read as a derivative of one of its own products.
+- **Forms**: Hybrid — PostHog Surveys for the 5 structured per-card interest forms (with a Slack/Zapier-to-Gmail webhook destination wired on day one to close the inbox-notification gap), and bare `posthog.capture('problem_pitch', ...)` for the general "tell us a problem we should solve" free-text capture. Tally is the documented fallback if PostHog Surveys friction proves unworkable post-launch.
+- **Visual identity**: Bolder & editorial — tech-publication aesthetic. Strong typography, magazine-like hierarchy, opinionated colors. Distinct from buggerd's tighter zinc/emerald/monospace look so the company brand isn't read as a derivative of one of its own products. **Designer of record: Claude (this assistant) — no human-designer hours budgeted.** Pitfall 7 from research is partially accepted: visual taste limitations are mitigated by sketching multiple treatments early and external cold-read review at launch gate.
 - **Voice**: Two candidate voices in tension — (1) Confident & direct ("we built this, here's why it works") and (2) Pragmatic / engineering-blog ("here's the problem, here's our pipeline, click to vote"). Resolution: produce sketch comparisons in a sketch phase before locking copy. Both candidates avoid breathless-AI tone.
 - **Voice exclusion**: No fake social proof, no fabricated metrics, no "trusted by Fortune 500" copy patterns. The honesty constraint that runs through the buggerd and Delegate landings carries here.
 - **No backend** in v1 — Astro static output, all dynamic surfaces (forms, analytics) handled by third parties.
@@ -81,6 +83,11 @@ The company-level marketing site for JigSpec — the proprietary agentic-AI runt
 | Visual: bolder editorial / tech-publication aesthetic, distinct from buggerd | Company-level brand shouldn't read as a derivative of its own product | — Pending |
 | Voice: two-sketch comparison in a sketch phase before locking copy | User wanted to see options 1 and 4 rendered before committing | — Pending |
 | Notion MCP not relied on — content sourced from local Business folder | MCP wasn't wired into this session; deferring eliminates a session-dependency risk | — Pending |
+| Forms split: PostHog Surveys for the 5 structured per-card forms, bare `posthog.capture` for the general "tell us a problem" free-text | Surveys' built-in form/dashboard/webhook UI is right for the structured CTAs; the open-ended capture is just an event with email + free-text — Surveys overhead isn't earned for it | — Pending |
+| Docs cutover destination: `docs.jigspec.com` (existing VitePress build redeployed there before apex swap) | Conventional, easy Cloudflare redirect rule, preserves brand; locking it now allows Phase 9 (cutover) to plan against it instead of waiting on a side decision | — Pending |
+| Demand-signal gate: 5 form submits per card OR 4 weeks of traffic, whichever comes first | Concrete and falsifiable — kills dead cards early, forces a vertical-pick decision at 4 weeks even if signal is mixed; uses research-recommended weighted formula (1.0×submits + 0.3×opens + 0.1×clicks + 0.05×dwell) for ranking | — Pending |
+| Designer of record: Claude (this session); no human-designer hours budgeted | User explicitly accepts the trade-off; mitigations are early sketch comparison + external cold-read at launch gate, not external designer pass | — Pending |
+| Add 6th card "Agentic Employees" (Marblism-style: hire named AI for functional ops roles) | Expands the demand-probe surface to include the SMB/founder hire-an-AI-employee model; intentionally creates a Delegate-overlap that the demand signal can resolve | — Pending |
 
 ## Evolution
 
