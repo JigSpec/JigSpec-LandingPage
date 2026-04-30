@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://jigspec.com',
   output: 'static',
+  integrations: [],
   vite: {
     plugins: [tailwindcss()],
   },
