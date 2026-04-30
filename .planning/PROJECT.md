@@ -88,6 +88,7 @@ The company-level marketing site for JigSpec — the proprietary agentic-AI runt
 | Demand-signal gate: 5 form submits per card OR 4 weeks of traffic, whichever comes first | Concrete and falsifiable — kills dead cards early, forces a vertical-pick decision at 4 weeks even if signal is mixed; uses research-recommended weighted formula (1.0×submits + 0.3×opens + 0.1×clicks + 0.05×dwell) for ranking | — Pending |
 | Designer of record: Claude (this session); no human-designer hours budgeted | User explicitly accepts the trade-off; mitigations are early sketch comparison + external cold-read at launch gate, not external designer pass | — Pending |
 | Add 6th card "Agentic Employees" (Marblism-style: hire named AI for functional ops roles) | Expands the demand-probe surface to include the SMB/founder hire-an-AI-employee model; intentionally creates a Delegate-overlap that the demand signal can resolve | — Pending |
+| Visual direction: Sketch B — Engineering-Blog Pragmatic (Crimson Pro 600 display + Inter 400 body, cool indigo accent #6366F1 on near-white #FAFAF8) | Picked from two-sketch comparison in Phase 1; editorial serif posture matches Stratechery anchor (D-06) and voice candidate (2); accepted Phase 2 risk that serif body copy quality bar is higher | — Locked Phase 1 |
 
 ## Evolution
 
