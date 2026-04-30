@@ -1,0 +1,56 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'JigSpec',
+  description = 'JigSpec — agentic AI that ships. The company-level studio behind the .pipe.yaml spec and products like buggerd.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="auto">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!-- Self-hosted via Astro Fonts API (TECH-05: zero external font CDN) -->
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+
+    <!--
+      Plumbing for Phase 4 dark-mode validation (D-10, D-11).
+      Tailwind 4 already drives palette via @media (prefers-color-scheme: dark) in global.css.
+      This script just reflects the user's preference into a data-theme attribute so
+      Mermaid (Phase 4) can read it without a second media query.
+    -->
+    <script is:inline>
+      (function () {
+        try {
+          const mq = window.matchMedia('(prefers-color-scheme: dark)');
+          const apply = () => {
+            document.documentElement.setAttribute(
+              'data-theme',
+              mq.matches ? 'dark' : 'light'
+            );
+          };
+          apply();
+          mq.addEventListener('change', apply);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-[var(--color-bg)] text-[var(--color-fg)] font-[var(--font-body)] antialiased min-h-screen flex flex-col">
+    <slot />
+  </body>
+</html>
