@@ -1,0 +1,36 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-[var(--color-muted)]/20">
+  <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-[var(--color-muted)]">
+    <p>&copy; {year} JigSpec</p>
+    <ul class="flex flex-wrap items-center gap-6">
+      <li>
+        <a
+          href="https://jigspec.com"
+          class="hover:text-[var(--color-accent)] transition-colors"
+        >
+          Docs
+        </a>
+      </li>
+      <li>
+        <a
+          href="mailto:hi@jigspec.com"
+          class="hover:text-[var(--color-accent)] transition-colors"
+        >
+          hi@jigspec.com
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://github.com/JigSpec"
+          rel="noopener"
+          class="hover:text-[var(--color-accent)] transition-colors"
+        >
+          GitHub
+        </a>
+      </li>
+    </ul>
+  </div>
+</footer>
