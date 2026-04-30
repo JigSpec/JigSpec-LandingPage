@@ -45,7 +45,7 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 
 ### Visual (editorial aesthetic, distinct from buggerd)
 
-- [ ] **VISUAL-01**: Two visual sketches are produced as throwaway HTML (`/gsd-sketch` artifacts in `.planning/sketches/`) — one for each candidate voice (Confident & Direct, Engineering-Blog Pragmatic) — both rendering hero + one card + diagram-1 area; the user reviews and picks one before the layout phase commits
+- [x] **VISUAL-01**: Two visual sketches are produced as throwaway HTML (`/gsd-sketch` artifacts in `.planning/sketches/`) — one for each candidate voice (Confident & Direct, Engineering-Blog Pragmatic) — both rendering hero + one card + diagram-1 area; the user reviews and picks one before the layout phase commits
 - [ ] **VISUAL-02**: The chosen visual treatment uses a 3-element typographic scale (display, body, micro) with a serif or grotesque sans display face *different* from buggerd's `ui-monospace` system stack; palette is 4 colors max (background, body text, accent, muted)
 - [ ] **VISUAL-03**: Visual identity is verifiably distinct from buggerd at first glance — different display typeface, different accent color (not buggerd's emerald-600), different chrome treatment — confirmed by a side-by-side screenshot review at the polish gate
 - [ ] **VISUAL-04**: Layout is mobile-responsive with desktop-first content density; hero and card grid reflow legibly at 320px; nav collapses appropriately
@@ -133,7 +133,7 @@ Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 | DIAGRAM-03 | Phase 4 | Pending |
 | DIAGRAM-04 | Phase 4 | Pending |
 | DIAGRAM-05 | Phase 4 | Pending |
-| VISUAL-01 | Phase 1 | Pending |
+| VISUAL-01 | Phase 1 | Complete |
 | VISUAL-02 | Phase 1 | Pending |
 | VISUAL-03 | Phase 1 | Pending |
 | VISUAL-04 | Phase 1 | Pending |
