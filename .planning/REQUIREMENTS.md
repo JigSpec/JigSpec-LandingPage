@@ -46,9 +46,9 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 ### Visual (editorial aesthetic, distinct from buggerd)
 
 - [x] **VISUAL-01**: Two visual sketches are produced as throwaway HTML (`/gsd-sketch` artifacts in `.planning/sketches/`) — one for each candidate voice (Confident & Direct, Engineering-Blog Pragmatic) — both rendering hero + one card + diagram-1 area; the user reviews and picks one before the layout phase commits
-- [ ] **VISUAL-02**: The chosen visual treatment uses a 3-element typographic scale (display, body, micro) with a serif or grotesque sans display face *different* from buggerd's `ui-monospace` system stack; palette is 4 colors max (background, body text, accent, muted)
-- [ ] **VISUAL-03**: Visual identity is verifiably distinct from buggerd at first glance — different display typeface, different accent color (not buggerd's emerald-600), different chrome treatment — confirmed by a side-by-side screenshot review at the polish gate
-- [ ] **VISUAL-04**: Layout is mobile-responsive with desktop-first content density; hero and card grid reflow legibly at 320px; nav collapses appropriately
+- [x] **VISUAL-02**: The chosen visual treatment uses a 3-element typographic scale (display, body, micro) with a serif or grotesque sans display face *different* from buggerd's `ui-monospace` system stack; palette is 4 colors max (background, body text, accent, muted)
+- [x] **VISUAL-03**: Visual identity is verifiably distinct from buggerd at first glance — different display typeface, different accent color (not buggerd's emerald-600), different chrome treatment — confirmed by a side-by-side screenshot review at the polish gate
+- [x] **VISUAL-04**: Layout is mobile-responsive with desktop-first content density; hero and card grid reflow legibly at 320px; nav collapses appropriately
 - [ ] **VISUAL-05**: External cold-read review (≥1 person who has not seen the page in development, ideally the non-technical co-founder) completed at the polish gate; reader is asked to describe what JigSpec does in their own words within 60 seconds — if they cannot, CONTENT-02 / VISUAL choices need iteration before launch
 
 ### Tech (stack scaffold)
@@ -57,7 +57,7 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 - [ ] **TECH-02**: `src/content/products/` content collection with one Markdown file per product, validated by a Zod schema with discriminated-union `cta` field (`external` for buggerd, `interest` for the others); `src/content/config.ts` also reserves an empty `blog` collection schema so v2 blog ships without re-platform
 - [ ] **TECH-03**: Component layout: `src/components/sections/` (page-narrative blocks), `src/components/cards/ProductCard.astro`, `src/components/forms/InterestForm.astro` (single primitive parameterized by `productId`), `src/components/diagrams/MermaidDiagram.astro`, `src/components/global/Nav.astro` + `Footer.astro` + `Analytics.astro`
 - [ ] **TECH-04**: `pages/index.astro` is composition only — imports section components in narrative order, contains no business logic, no inline data
-- [ ] **TECH-05**: Astro Fonts API self-hosts the chosen typefaces (zero external font CDN); CSP in `vercel.json` does not require font-CDN allowlisting
+- [x] **TECH-05**: Astro Fonts API self-hosts the chosen typefaces (zero external font CDN); CSP in `vercel.json` does not require font-CDN allowlisting
 
 ### Deploy (preview, repo, cutover)
 
@@ -134,15 +134,15 @@ Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 | DIAGRAM-04 | Phase 4 | Pending |
 | DIAGRAM-05 | Phase 4 | Pending |
 | VISUAL-01 | Phase 1 | Complete |
-| VISUAL-02 | Phase 1 | Pending |
-| VISUAL-03 | Phase 1 | Pending |
-| VISUAL-04 | Phase 1 | Pending |
+| VISUAL-02 | Phase 1 | Complete |
+| VISUAL-03 | Phase 1 | Complete |
+| VISUAL-04 | Phase 1 | Complete |
 | VISUAL-05 | Phase 4 | Pending |
 | TECH-01 | Phase 1 | Complete |
 | TECH-02 | Phase 2 | Pending |
 | TECH-03 | Phase 2 | Pending |
 | TECH-04 | Phase 2 | Pending |
-| TECH-05 | Phase 1 | Pending |
+| TECH-05 | Phase 1 | Complete |
 | DEPLOY-01 | Phase 1 | Pending |
 | DEPLOY-02 | Phase 1 | Pending |
 | DEPLOY-03 | Phase 1 | Pending |
