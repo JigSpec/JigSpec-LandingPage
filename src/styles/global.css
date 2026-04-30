@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+@theme {
+  /* Palette — ≤4 colors per VISUAL-02 (D-09) */
+  --color-bg: #FAFAF8;
+  --color-fg: #18181B;
+  --color-muted: #71717A;
+  --color-accent: #6366F1;
+
+  /* Type scale — 3 elements per VISUAL-02 (D-08) */
+  --font-display: 'Crimson Pro', ui-serif, Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-micro: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Dark mode via prefers-color-scheme (D-10: media strategy, no toggle UI) */
+/* Dark palette is auto-derived per D-11 — validated visually only in Phase 4 */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-bg: #0A0A0A;
+    --color-fg: #FAFAFA;
+    --color-muted: #A1A1AA;
+    /* --color-accent unchanged per D-11 (auto-derivation, validate Phase 4) */
+  }
+}
+
+/* Base resets (kept minimal — Tailwind 4 preflight handles most) */
+html {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+}
