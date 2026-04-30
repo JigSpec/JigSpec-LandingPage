@@ -219,6 +219,16 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>grep -E "Visual direction: Sketch [AB]" .planning/PROJECT.md && grep -E "Locked Phase 1" .planning/PROJECT.md</automated>
   </verify>
+  <acceptance_criteria>
+    - User has selected one of the two options (`direction-a` or `direction-b`) via the resume-signal.
+    - `.planning/PROJECT.md` contains exactly one new row matching the regex `Visual direction: Sketch [AB]` (verified by `grep -cE "Visual direction: Sketch [AB]" .planning/PROJECT.md` returning `1`).
+    - The new row contains the chosen direction's display typeface name (`Inter Tight` for A, `Crimson Pro` for B).
+    - The new row contains the chosen direction's accent hex (`#F59E0B` for A, `#6366F1` for B).
+    - The new row's Outcome column contains the literal string `— Locked Phase 1`.
+    - The new row sits inside the existing Key Decisions table (above the `## Evolution` header — verified by `grep -n "## Evolution" .planning/PROJECT.md` returning a line number greater than the new row's line number).
+    - No other rows in the Key Decisions table have been mutated (the existing table rows are unchanged — verify by spot-checking the rows added in prior commits are still present).
+    - The chosen direction (A or B) is recorded in the executor's working state so tasks 2-7 can branch on it.
+  </acceptance_criteria>
   <done>
     - `.planning/PROJECT.md` contains exactly one row matching `Visual direction: Sketch [AB]`
     - That row is in the Key Decisions table (above the `## Evolution` header)
@@ -324,6 +334,19 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>npx astro check 2>&1 | grep -v "^#" | tee /tmp/astro-check.log; test "${PIPESTATUS[0]}" = "0" && (grep -q "Inter Tight" astro.config.mjs && ! grep -q "Crimson Pro" astro.config.mjs) || (grep -q "Crimson Pro" astro.config.mjs && ! grep -q "Inter Tight" astro.config.mjs)</automated>
   </verify>
+  <acceptance_criteria>
+    - `astro.config.mjs` imports `fontProviders` from `'astro/config'` (verified by `grep -q "fontProviders" astro.config.mjs`).
+    - `astro.config.mjs` contains the substring `experimental:` AND a `fonts:` array key (verified by `grep -q "experimental" astro.config.mjs` AND `grep -q "fonts:" astro.config.mjs`).
+    - `astro.config.mjs` contains exactly two `cssVariable:` declarations: `'--font-display'` AND `'--font-body'` (verified by `grep -c "cssVariable:" astro.config.mjs` returning `2`).
+    - For direction A: file contains `'Inter Tight'` AND does NOT contain `'Crimson Pro'` (verified by `grep -q "Inter Tight" astro.config.mjs && ! grep -q "Crimson Pro" astro.config.mjs`).
+    - For direction B: file contains `'Crimson Pro'` AND does NOT contain `'Inter Tight'` (verified by `grep -q "Crimson Pro" astro.config.mjs && ! grep -q "Inter Tight" astro.config.mjs`).
+    - `output: 'static'` is preserved in the config (verified by `grep -q "output: 'static'" astro.config.mjs`).
+    - `vite.plugins` still contains `tailwindcss()` (verified by `grep -q "tailwindcss()" astro.config.mjs`).
+    - File does NOT contain `@astrojs/tailwind` (deprecated v3 integration — verified by `! grep -q "@astrojs/tailwind" astro.config.mjs`).
+    - File does NOT contain `output: 'server'` (verified by `! grep -q "output: 'server'" astro.config.mjs`).
+    - Independent of the existing PIPESTATUS-based verify line, `npx astro check` exits 0 when run directly (verified by `npx astro check; test $? -eq 0`). This is a separate gate from the bash-specific `${PIPESTATUS[0]}` check in `<verify>` so non-bash shells cannot silently pass the task.
+    - `npm run build` exits 0 (verified by `npm run build; test $? -eq 0`) — proves the font config is structurally valid and the static build still produces output.
+  </acceptance_criteria>
   <done>
     - `astro.config.mjs` imports `fontProviders` from `'astro/config'`
     - `astro.config.mjs` contains an `experimental.fonts` array with exactly two entries (display + body)
@@ -429,6 +452,19 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>grep -q "@import \"tailwindcss\"" src/styles/global.css && grep -q "@theme" src/styles/global.css && grep -q "\-\-color-bg:" src/styles/global.css && grep -q "\-\-color-fg:" src/styles/global.css && grep -q "\-\-color-muted:" src/styles/global.css && grep -q "\-\-color-accent:" src/styles/global.css && grep -q "\-\-font-display:" src/styles/global.css && grep -q "\-\-font-body:" src/styles/global.css && grep -q "\-\-font-micro:" src/styles/global.css && grep -q "prefers-color-scheme: dark" src/styles/global.css && [ "$(grep -E "^\s*--color-(bg|fg|muted|accent):" src/styles/global.css | grep -v "^\s*/\*" | wc -l | tr -d ' ')" -le 7 ] && (grep -q "#F59E0B" src/styles/global.css || grep -q "#6366F1" src/styles/global.css)</automated>
   </verify>
+  <acceptance_criteria>
+    - `src/styles/global.css` opens with `@import "tailwindcss"` (verified by `head -1 src/styles/global.css | grep -q '@import "tailwindcss"'`).
+    - File contains `@theme` (verified by `grep -q "@theme" src/styles/global.css`).
+    - File contains all four palette tokens: `--color-bg:`, `--color-fg:`, `--color-muted:`, `--color-accent:` (each verified by an individual grep).
+    - File contains all three type-scale tokens: `--font-display:`, `--font-body:`, `--font-micro:` (each verified by an individual grep).
+    - For direction A: file contains the literal `--color-accent: #F59E0B` AND `'Inter Tight'` (verified by `grep -q "color-accent: #F59E0B" src/styles/global.css && grep -q "Inter Tight" src/styles/global.css`).
+    - For direction B: file contains the literal `--color-accent: #6366F1` AND `'Crimson Pro'` (verified by `grep -q "color-accent: #6366F1" src/styles/global.css && grep -q "Crimson Pro" src/styles/global.css`).
+    - File does NOT contain `emerald` (case-insensitive — distinct from buggerd; verified by `! grep -qi "emerald" src/styles/global.css`).
+    - File contains a `@media (prefers-color-scheme: dark)` block (verified by `grep -q "prefers-color-scheme: dark" src/styles/global.css`).
+    - The dark-mode block overrides exactly three of the four palette tokens (`--color-bg`, `--color-fg`, `--color-muted`) and does NOT override `--color-accent` (verified by reading the dark block and confirming no `--color-accent` line appears between its `{` and `}`).
+    - Total non-comment `--color-*` declarations across the entire file is at most 7 (4 light + 3 dark overrides — verified by the existing `<verify>` shell pipeline).
+    - File does NOT contain `darkMode: 'class'` (verified by `! grep -q "darkMode: 'class'" src/styles/global.css`).
+  </acceptance_criteria>
   <done>
     - `src/styles/global.css` opens with `@import "tailwindcss";`
     - Contains an `@theme` block with exactly 4 `--color-*` declarations in light scope (`bg`, `fg`, `muted`, `accent`)
@@ -521,6 +557,19 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>test -f src/layouts/Base.astro && grep -q 'data-theme' src/layouts/Base.astro && grep -q '<slot' src/layouts/Base.astro && grep -q 'cssVariable="--font-display"' src/layouts/Base.astro && grep -q 'cssVariable="--font-body"' src/layouts/Base.astro && grep -q 'is:inline' src/layouts/Base.astro && grep -q "import '../styles/global.css'" src/layouts/Base.astro && ! grep -q "fonts.googleapis.com\|fonts.gstatic.com" src/layouts/Base.astro</automated>
   </verify>
+  <acceptance_criteria>
+    - `src/layouts/Base.astro` exists (verified by `test -f src/layouts/Base.astro`).
+    - File contains `data-theme` on the `<html>` element (verified by `grep -q '<html.*data-theme' src/layouts/Base.astro` OR by `grep -q 'data-theme' src/layouts/Base.astro` since the only `data-theme` in the file is on the html element).
+    - File contains `<slot` (slot for page content — verified by `grep -q '<slot' src/layouts/Base.astro`).
+    - File contains `prefers-color-scheme` (the inline script reading dark/light preference — verified by `grep -q "prefers-color-scheme" src/layouts/Base.astro`).
+    - File imports the `Font` component from `astro:assets` (verified by `grep -q "import { Font } from 'astro:assets'" src/layouts/Base.astro`).
+    - File contains exactly two `<Font cssVariable=` invocations: one for `--font-display` and one for `--font-body` (verified by `grep -c '<Font cssVariable=' src/layouts/Base.astro` returning `2`).
+    - File contains an `is:inline` script tag (verified by `grep -q 'is:inline' src/layouts/Base.astro`).
+    - File imports `'../styles/global.css'` (verified by `grep -q "import '../styles/global.css'" src/layouts/Base.astro`).
+    - File does NOT reference `fonts.googleapis.com` (verified by `! grep -q "fonts.googleapis.com" src/layouts/Base.astro`).
+    - File does NOT reference `fonts.gstatic.com` (verified by `! grep -q "fonts.gstatic.com" src/layouts/Base.astro`).
+    - File does NOT contain any `<link rel="stylesheet"` tag pointing at an external font CDN (TECH-05 — verified by `! grep -q "rel=\"stylesheet\".*fonts\\." src/layouts/Base.astro`).
+  </acceptance_criteria>
   <done>
     - `src/layouts/Base.astro` exists
     - Contains `<html lang="en" data-theme=` (initial attribute present)
@@ -643,6 +692,18 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>test -f src/components/global/Nav.astro && grep -q 'JigSpec' src/components/global/Nav.astro && grep -q 'md:hidden' src/components/global/Nav.astro && grep -q 'md:flex' src/components/global/Nav.astro && grep -q 'aria-expanded' src/components/global/Nav.astro && grep -q "addEventListener('click'" src/components/global/Nav.astro && grep -q 'nav-toggle' src/components/global/Nav.astro && grep -c '#products\|#docs\|#about' src/components/global/Nav.astro | awk '{ if ($1 < 2) exit 1 }'</automated>
   </verify>
+  <acceptance_criteria>
+    - `src/components/global/Nav.astro` exists (verified by `test -f src/components/global/Nav.astro`).
+    - File contains the wordmark text `JigSpec` (verified by `grep -q 'JigSpec' src/components/global/Nav.astro`).
+    - File contains `md:hidden` (hamburger button visible only below md=768px — verified by `grep -q 'md:hidden' src/components/global/Nav.astro`).
+    - File contains `md:flex` (inline links visible at md+ — verified by `grep -q 'md:flex' src/components/global/Nav.astro`).
+    - File contains an `id="nav-toggle"` button with `aria-expanded` and `aria-controls` (verified by `grep -q 'id="nav-toggle"' src/components/global/Nav.astro && grep -q 'aria-expanded' src/components/global/Nav.astro && grep -q 'aria-controls' src/components/global/Nav.astro`).
+    - File contains an `id="nav-mobile-menu"` ul (verified by `grep -q 'id="nav-mobile-menu"' src/components/global/Nav.astro`).
+    - File contains a `<script>` tag (vanilla JS for hamburger toggle — no React/Alpine — verified by `grep -q '<script' src/components/global/Nav.astro`).
+    - File contains `addEventListener('click'` (toggle wiring — verified by `grep -q "addEventListener('click'" src/components/global/Nav.astro`).
+    - File contains the three anchor href targets `#products`, `#docs`, `#about`, each appearing at least twice (once in desktop list, once in mobile list — verified by `grep -c '#products' src/components/global/Nav.astro | awk '{ if ($1 < 2) exit 1 }'` and same for `#docs` and `#about`); equivalently the file contains at least 6 anchor `<a` tags whose href starts with `#`.
+    - File does NOT contain `<img` for the wordmark and does NOT reference any logo SVG file (verified by `! grep -q '<img' src/components/global/Nav.astro` AND `! grep -q 'logo\\.\\(svg\\|png\\|jpg\\)' src/components/global/Nav.astro`).
+  </acceptance_criteria>
   <done>
     - `src/components/global/Nav.astro` exists
     - Contains the wordmark text `JigSpec`
@@ -716,6 +777,16 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>test -f src/components/global/Footer.astro && grep -q 'github.com/JigSpec' src/components/global/Footer.astro && grep -q 'hi@jigspec.com' src/components/global/Footer.astro && grep -q 'getFullYear()' src/components/global/Footer.astro && grep -q 'href="https://jigspec.com"' src/components/global/Footer.astro</automated>
   </verify>
+  <acceptance_criteria>
+    - `src/components/global/Footer.astro` exists (verified by `test -f src/components/global/Footer.astro`).
+    - File contains `github.com/JigSpec` (GitHub org link — verified by `grep -q 'github.com/JigSpec' src/components/global/Footer.astro`).
+    - File contains a 2026 copyright signal: either the literal `2026` or a `getFullYear()` build-time computation (verified by `grep -q '2026' src/components/global/Footer.astro || grep -q 'getFullYear()' src/components/global/Footer.astro`); the `getFullYear()` form is preferred and will resolve to `2026` in the current build.
+    - File contains a contact email matching the `*@jigspec.com` pattern (verified by `grep -qE '[a-zA-Z0-9._%+-]+@jigspec\.com' src/components/global/Footer.astro`); the canonical address is `hi@jigspec.com`.
+    - File contains the docs URL `jigspec.com` (verified by `grep -q 'jigspec.com' src/components/global/Footer.astro`); specifically the docs anchor sets `href="https://jigspec.com"` (verified by `grep -q 'href="https://jigspec.com"' src/components/global/Footer.astro`).
+    - File contains a `mailto:` anchor (verified by `grep -q 'mailto:' src/components/global/Footer.astro`).
+    - File contains exactly four required footer items (copyright, docs, contact email, GitHub): verified by `grep -c '<a ' src/components/global/Footer.astro` returning at least `3` (the three external/mailto links) and the copyright `<p>` tag being present (`grep -q '&copy;' src/components/global/Footer.astro`).
+    - The GitHub external link has `rel="noopener"` (verified by `grep -A2 'github.com/JigSpec' src/components/global/Footer.astro | grep -q 'rel="noopener"'`).
+  </acceptance_criteria>
   <done>
     - `src/components/global/Footer.astro` exists
     - Contains `https://github.com/JigSpec` (GitHub org link)
@@ -774,6 +845,18 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>test -f src/pages/index.astro && grep -q 'import Base from' src/pages/index.astro && grep -q '<Base' src/pages/index.astro && grep -q '<Nav' src/pages/index.astro && grep -q '<Footer' src/pages/index.astro && grep -q '<h1' src/pages/index.astro && grep -q 'coming soon' src/pages/index.astro && ! grep -q 'product-card\|<section.*products\|posthog\|mermaid' src/pages/index.astro</automated>
   </verify>
+  <acceptance_criteria>
+    - `src/pages/index.astro` exists (verified by `test -f src/pages/index.astro`).
+    - File contains `import Base from` AND `<Base` (layout wrapper — verified by `grep -q 'import Base from' src/pages/index.astro && grep -q '<Base' src/pages/index.astro`).
+    - File contains `<Nav` (verified by `grep -q '<Nav' src/pages/index.astro`).
+    - File contains `<Footer` (verified by `grep -q '<Footer' src/pages/index.astro`).
+    - File contains `<h1` (placeholder headline — verified by `grep -q '<h1' src/pages/index.astro`).
+    - File contains `coming soon` (placeholder copy per D-24 — verified by `grep -q 'coming soon' src/pages/index.astro`).
+    - File does NOT contain `<section` (no hero/cards/sections — Phase 1 is shell-only per D-24; verified by `! grep -q '<section' src/pages/index.astro`).
+    - File does NOT contain `<form` (no email capture in Phase 1 — verified by `! grep -q '<form' src/pages/index.astro`).
+    - File does NOT contain `posthog` or `mermaid` (Phase 3/4 dependencies — verified by `! grep -qi 'posthog\|mermaid' src/pages/index.astro`).
+    - File contains at most one `<h1` and at most one `<p` outside the Base/Nav/Footer composition (a single placeholder headline and a single supporting note — verified by `grep -c '<h1' src/pages/index.astro` returning `1`).
+  </acceptance_criteria>
   <done>
     - `src/pages/index.astro` exists and was overwritten (not appended to)
     - Contains imports for `Base`, `Nav`, `Footer` from their respective paths
@@ -833,6 +916,16 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>npx astro check && npm run build && test -f dist/index.html && ! grep -rn "emerald-600\|emerald-500\|#10B981\|#059669" src/ astro.config.mjs && ! grep -rn "font-mono" src/ && [ "$(grep -E "^\s*--color-" src/styles/global.css | grep -v "^\s*/\*" | wc -l | tr -d ' ')" -le 7 ]</automated>
   </verify>
+  <acceptance_criteria>
+    - No file under `src/` (case-insensitive) contains the literal `ui-monospace` outside of `src/styles/global.css` (the `--font-micro` fallback declaration is the only allowed occurrence — verified by `grep -ril "ui-monospace" src/` returning at most `src/styles/global.css`).
+    - No file under `src/` contains the Tailwind utility `font-mono` (verified by `! grep -rn "font-mono" src/`).
+    - No file under `src/` or `astro.config.mjs` contains the buggerd emerald markers `emerald-600`, `emerald-500`, `#10B981`, or `#059669` (each verified by `! grep -rn '<token>' src/ astro.config.mjs`).
+    - `npx astro check` exits 0 (verified by `npx astro check; test $? -eq 0`).
+    - `npm run build` exits 0 (verified by `npm run build; test $? -eq 0`).
+    - `dist/` directory exists after the build (verified by `test -d dist`).
+    - `dist/index.html` exists after the build (verified by `test -f dist/index.html`).
+    - The total count of `--color-*` declarations across `src/styles/global.css` is at most 7 (4 light + 3 dark overrides, no accent override — verified by the existing `<verify>` shell pipeline).
+  </acceptance_criteria>
   <done>
     - `npx astro check` exits 0
     - `npm run build` exits 0
@@ -913,6 +1006,17 @@ Tailwind 4 @theme block (in src/styles/global.css):
   <verify>
     <automated>test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-320.png && test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-375.png && test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-414.png && test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-1280.png</automated>
   </verify>
+  <acceptance_criteria>
+    - All four PNG files exist on disk: `verification-screenshots/dev-320.png`, `dev-375.png`, `dev-414.png`, `dev-1280.png` (verified by `test -f` for each path).
+    - Each file is non-empty (verified by `test -s <path>` for each — empty PNGs would indicate a failed capture).
+    - User has replied to the resume-signal with `approved` (or an explicit issue description that triggers a revision loop).
+    - User confirms (in their resume-signal reply) that nav collapses to a hamburger button at the 320, 375, and 414 viewports (no inline `Products`/`Docs`/`About` links visible at these widths).
+    - User confirms that nav shows inline `Products`/`Docs`/`About` links at 1280, and the hamburger button is not visible at that width.
+    - User confirms that the `<h1>` "JigSpec — coming soon" is legible at all four widths: no horizontal overflow at 320, no awkward mid-word wrap at 320/375/414, and dominant (text-5xl/6xl) at 1280.
+    - User confirms that the footer is visible at all widths and its three items (`Docs`, `hi@jigspec.com`, `GitHub`) render reasonably (stacked/wrapped at mobile widths, single row at 1280).
+    - User confirms the visual identity does NOT read as a buggerd derivative: no monospace headline, no emerald accent, no zinc/dark dense layout.
+    - User confirms the chosen direction's accent color is visible on link hover (warm amber `#F59E0B` for direction A, cool indigo `#6366F1` for direction B).
+  </acceptance_criteria>
   <resume-signal>Type "approved" once all five visual checks pass at all four viewports. If any check fails, describe the failure (e.g., "h1 wraps mid-word at 320", "hamburger missing at 414", "accent looks emerald-adjacent") and the executor will revise.</resume-signal>
   <done>
     - All four screenshot PNGs exist in `verification-screenshots/`

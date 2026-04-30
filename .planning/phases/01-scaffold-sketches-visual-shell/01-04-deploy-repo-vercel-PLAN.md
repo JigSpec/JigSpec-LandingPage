@@ -247,6 +247,18 @@ CLAUDE.md
   <verify>
     <automated>test -f vercel.json && jq -e '.cleanUrls == true and .trailingSlash == false' vercel.json && grep -c 'us-assets.i.posthog.com' vercel.json | grep -E '^[2-9]' && grep -c 'us.i.posthog.com' vercel.json | grep -E '^[1-9]' && grep -c 'Strict-Transport-Security' vercel.json | grep -E '^[1-9]' && grep -c 'X-Frame-Options' vercel.json | grep -E '^[1-9]' && grep -q '"DENY"' vercel.json && grep -c 'X-Content-Type-Options' vercel.json | grep -E '^[1-9]' && grep -c 'Referrer-Policy' vercel.json | grep -E '^[1-9]' && grep -c 'Permissions-Policy' vercel.json | grep -E '^[1-9]' && grep -q '/.planning/(.*)' vercel.json && grep -q '"/404"' vercel.json && ! grep -q 'cdn.tailwindcss.com' vercel.json && ! grep -q '/archive/' vercel.json</automated>
   </verify>
+  <acceptance_criteria>
+    - File `vercel.json` exists at repo root.
+    - File is valid JSON: `python3 -m json.tool vercel.json` (or `jq . vercel.json`) exits 0.
+    - `jq -e '.cleanUrls == true' vercel.json` exits 0 (`"cleanUrls": true` present).
+    - `jq -e '.trailingSlash == false' vercel.json` exits 0 (`"trailingSlash": false` present).
+    - CSP `script-src` contains `https://us-assets.i.posthog.com` (verified via grep on the CSP header value in `vercel.json`).
+    - CSP `connect-src` contains BOTH `https://us-assets.i.posthog.com` AND `https://us.i.posthog.com` (so `grep -c 'us-assets.i.posthog.com' vercel.json` returns at least 2 — once in script-src, once in connect-src; and `grep -q 'us.i.posthog.com' vercel.json` exits 0).
+    - Headers array includes all six: `Strict-Transport-Security`, `X-Frame-Options` (with value `DENY`), `X-Content-Type-Options` (with value `nosniff`), `Referrer-Policy`, `Permissions-Policy`, `Content-Security-Policy` (each verified by `grep -q` for the header key in `vercel.json`).
+    - Redirects array contains a rule whose `source` matches `/.planning/(.*)` and whose `destination` is `/404` (`grep -q '/.planning/(.*)' vercel.json` AND `grep -q '"/404"' vercel.json`).
+    - File does NOT contain `cdn.tailwindcss.com` (the buggerd-era CSP entry was dropped per D-20 — `! grep -q 'cdn.tailwindcss.com' vercel.json`).
+    - File does NOT contain `/archive/` redirect (no `archive/` directory in JigSpec landing repo — `! grep -q '/archive/' vercel.json`).
+  </acceptance_criteria>
   <done>
     `vercel.json` exists at repo root. `jq` confirms `cleanUrls: true` and `trailingSlash: false`. CSP contains both PostHog hosts. All six security headers present. `.planning/(.*)` redirect to `/404` present. NO `cdn.tailwindcss.com` (we use Tailwind 4 build-time). NO `/archive/` redirect (no such directory in this repo).
   </done>
@@ -275,6 +287,14 @@ CLAUDE.md
   <verify>
     <automated>test -f .vercelignore && grep -qx '\.planning/' .vercelignore && grep -qx '\.git/' .vercelignore && grep -qx 'node_modules/' .vercelignore && grep -qx '\.claude/' .vercelignore</automated>
   </verify>
+  <acceptance_criteria>
+    - File `.vercelignore` exists at repo root.
+    - File contains `.planning/` as a standalone line (`grep -qx '\.planning/' .vercelignore` exits 0 — D-21 exclusion).
+    - File contains `.git/` as a standalone line (`grep -qx '\.git/' .vercelignore` exits 0 — D-21 exclusion).
+    - File contains `node_modules/` as a standalone line (`grep -qx 'node_modules/' .vercelignore` exits 0 — D-21 exclusion).
+    - File contains `.claude/` as a standalone line (`grep -qx '\.claude/' .vercelignore` exits 0 — D-21 exclusion).
+    - File has at least 4 non-empty, non-comment lines (`grep -v '^#' .vercelignore | grep -v '^[[:space:]]*$' | wc -l` returns ≥ 4).
+  </acceptance_criteria>
   <done>
     `.vercelignore` exists at repo root. Contains all four exclusions per D-21: `.planning/`, `.git/`, `node_modules/`, `.claude/`. Comments are optional but no exclusion is missing.
   </done>
@@ -335,6 +355,17 @@ CLAUDE.md
   <verify>
     <automated>git log -1 --name-only | grep -q '^vercel\.json$' && git log -1 --name-only | grep -q '^\.vercelignore$' && test -d dist && ! find dist -path '*planning*' -print -quit | grep -q . && ! find dist -path '*\.claude*' -print -quit | grep -q . && ! find dist -path '*node_modules*' -print -quit | grep -q .</automated>
   </verify>
+  <acceptance_criteria>
+    - `git log -1 --name-only` includes `vercel.json` (file is part of HEAD commit).
+    - `git log -1 --name-only` includes `.vercelignore` (file is part of HEAD commit).
+    - Together that means `git status --porcelain` BEFORE the commit showed at least 2 staged/untracked entries for `vercel.json` and `.vercelignore` (covered by the post-commit name-only check).
+    - `npm run build` exited 0 in Step 3 (build succeeded with new `vercel.json` present).
+    - Directory `dist/` exists (`test -d dist` exits 0).
+    - `find dist/ -path '*planning*'` returns no matches (no `.planning/` content in build output — verified via `! find dist -path '*planning*' -print -quit | grep -q .`).
+    - `find dist/ -path '*\.claude*'` returns no matches (no `.claude/` content in build output).
+    - `find dist/ -path '*node_modules*'` returns no matches (no `node_modules/` content in build output).
+    - No `git push` has been issued yet (user owns the first push in Task 4 per D-14 — verifiable by absence of any `origin/main` ref locally, or simply by the fact that Task 4 hasn't run).
+  </acceptance_criteria>
   <done>
     HEAD commit includes both `vercel.json` and `.vercelignore`. `dist/` exists from a successful build. `dist/` contains nothing from `.planning/`, `.claude/`, or `node_modules/`. No push has occurred yet.
   </done>
@@ -425,6 +456,15 @@ CLAUDE.md
 
     **Report back:** Reply with the production preview URL (e.g. `https://jigspec-landing.vercel.app`) so Task 5 can verify it. Also confirm: "branch protection enabled, auto-deploy confirmed."
   </how-to-verify>
+  <acceptance_criteria>
+    - User reports back a production preview URL string matching `^https://[a-z0-9-]+\.vercel\.app/?$` (default `*.vercel.app` host) OR a custom-domain equivalent matching `^https://[a-z0-9.-]+\.[a-z]{2,}/?$` (e.g. `https://jigspec-landing.vercel.app`).
+    - The reported URL is captured into a plan-scoped variable `${LIVE_URL}` for use by Tasks 5 and 6.
+    - User confirms branch protection is enabled on `main` (force-push blocked) — verifiable via `gh api repos/JigSpec/jigspec-landing/branches/main/protection --jq '.allow_force_pushes.enabled'` returning `false`.
+    - User confirms `required_pull_request_reviews` is `null` per D-15 (no required PR reviews — solo project).
+    - User confirms Vercel auto-deploy from `main` is configured (Vercel project Settings → Git shows production branch `main` connected to `JigSpec/jigspec-landing`).
+    - `gh repo view JigSpec/jigspec-landing --json visibility` returns `{"visibility":"PUBLIC"}` per D-16.
+    - The first deploy from the initial push completed successfully (Vercel dashboard shows ≥1 production deployment).
+  </acceptance_criteria>
   <resume-signal>Reply with the live preview URL and confirmation: "URL: <url>. Branch protection enabled. Auto-deploy confirmed."</resume-signal>
 </task>
 
@@ -505,6 +545,24 @@ CLAUDE.md
     ```
     The push triggers another Vercel deploy — that itself is a smoke test of the auto-deploy loop.
   </how-to-verify>
+  <acceptance_criteria>
+    - `curl -sI https://${LIVE_URL}/ | head -1` returns a status line containing `200` (e.g. `HTTP/2 200` — root serves empty shell).
+    - Response headers from `https://${LIVE_URL}/` include `strict-transport-security` containing `max-age=31536000` (`grep -i '^strict-transport-security:.*max-age=31536000' /tmp/jigspec-headers.txt` exits 0).
+    - Response headers include `x-frame-options: DENY` (case-insensitive `grep -i '^x-frame-options: DENY' /tmp/jigspec-headers.txt` exits 0).
+    - Response headers include `x-content-type-options: nosniff` (`grep -i '^x-content-type-options: nosniff' /tmp/jigspec-headers.txt` exits 0).
+    - Response headers include `referrer-policy: strict-origin-when-cross-origin` (`grep -i '^referrer-policy: strict-origin-when-cross-origin' /tmp/jigspec-headers.txt` exits 0).
+    - Response headers include a `permissions-policy:` header (`grep -i '^permissions-policy:' /tmp/jigspec-headers.txt` exits 0).
+    - Response headers include `content-security-policy:` containing both `us-assets.i.posthog.com` AND `us.i.posthog.com` (two `grep -i` checks, each exits 0).
+    - `curl -sI https://${LIVE_URL}/.planning/PROJECT.md | head -1` returns a status line containing `404` (NOT 200, NOT 403 preferred — 403 acceptable only if redirect chain to `/404` is verified separately).
+    - `curl -sI https://${LIVE_URL}/.planning/STATE.md | head -1` returns a status line containing `404`.
+    - `curl -sI https://${LIVE_URL}/.planning/sketches/sketch-a-confident-direct.html | head -1` returns a status line containing `404`.
+    - File `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/live-320.png` exists (PNG, valid image; `file` command reports `PNG image data`).
+    - File `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/live-375.png` exists (PNG).
+    - File `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/live-414.png` exists (PNG).
+    - File `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/live-1280.png` exists (PNG).
+    - All four screenshots staged and committed: `git log -1 --name-only` includes the four PNG paths above OR a prior commit on `origin/main` does.
+    - Vercel dashboard confirms ≥1 production deploy on `main` (manual visual check by user; user reports back "auto-deploy active").
+  </acceptance_criteria>
   <resume-signal>Reply "verified" with the live URL and confirmation that all five checks (headers, .planning 404, four viewport screenshots, auto-deploy active, screenshot commit pushed) passed. If any check fails, paste the failing curl output or screenshot path so we can debug.</resume-signal>
 </task>
 
@@ -526,7 +584,7 @@ CLAUDE.md
     ```
     | Phase 1 deploy | Live preview URL: https://<URL> (Vercel project `jigspec-landing`, auto-deploys from `main`). Verified <YYYY-MM-DD> with HSTS + full CSP including PostHog hosts; `.planning/` returns 404. | D-12, D-13, D-20, D-21 |
     ```
-    Substitute `<URL>` with the actual URL from Task 4 and `<YYYY-MM-DD>` with today's date.
+    Substitute `<URL>` with the actual URL from Task 4 (the value the user passed via the resume signal — `${LIVE_URL}`) and `<YYYY-MM-DD>` with today's date.
 
     If PROJECT.md uses a bullet-list format for Key Decisions instead of a table, follow that format — match the existing structure exactly.
 
@@ -548,6 +606,15 @@ CLAUDE.md
   <verify>
     <automated>grep -F "$(cat /tmp/jigspec-headers.txt 2>/dev/null | grep -oE 'https?://[^ ]+' | head -1 || echo 'jigspec-landing')" .planning/PROJECT.md && grep -q 'Phase 1 deploy verified' .planning/STATE.md && git log -1 --name-only | grep -qE '(PROJECT\.md|STATE\.md)'</automated>
   </verify>
+  <acceptance_criteria>
+    - The literal preview URL captured from Task 4's checkpoint reply (the plan-scoped variable `${LIVE_URL}`, e.g. `https://jigspec-landing.vercel.app`) appears verbatim in `.planning/PROJECT.md` — verifiable by `grep -F "${LIVE_URL}" .planning/PROJECT.md` exiting 0. This criterion takes the URL directly from the checkpoint reply and does NOT depend on `/tmp/jigspec-headers.txt` (which may not survive a checkpoint resume across shell sessions).
+    - `.planning/PROJECT.md` contains a Key Decisions row referencing `Phase 1 deploy` and the URL (`grep -q 'Phase 1 deploy' .planning/PROJECT.md` exits 0).
+    - `.planning/STATE.md` Last Activity contains the URL OR a `Phase 1 deploy verified` marker (`grep -q 'Phase 1 deploy verified' .planning/STATE.md` exits 0).
+    - `git diff --stat HEAD~1 .planning/` (or equivalent inspection of the most recent commit) shows BOTH `.planning/PROJECT.md` and `.planning/STATE.md` modified (`git log -1 --name-only | grep -qE '(PROJECT\.md|STATE\.md)'` exits 0; both files appear).
+    - The commit is pushed to `origin/main` (`git rev-parse HEAD` matches `git rev-parse origin/main` after `git fetch`).
+    - PROJECT.md frontmatter is unchanged from prior commit (`git diff HEAD~1 -- .planning/PROJECT.md` shows no changes inside the frontmatter `---` block — the edit is additive, not rewriting).
+    - STATE.md frontmatter is unchanged from prior commit (same check on `.planning/STATE.md`).
+  </acceptance_criteria>
   <done>
     PROJECT.md Key Decisions section contains a new row with the live preview URL. STATE.md Last Activity contains a "Phase 1 deploy verified at <URL>" bullet referencing DEPLOY-01/02/03. Both changes committed and pushed to `main`.
   </done>
@@ -567,18 +634,18 @@ CLAUDE.md
 
 ## STRIDE Threat Register
 
-| Threat ID | Category | Component | Disposition | Mitigation Plan |
-|-----------|----------|-----------|-------------|-----------------|
-| T-01-04-01 | Information Disclosure | Vercel deploy artifact | mitigate | `.vercelignore` excludes `.planning/`, `.git/`, `node_modules/`, `.claude/` (Task 2 per D-21). `vercel.json` adds `/.planning/(.*)` -> `/404` redirect as defense-in-depth (Task 1 per D-20). Verified post-deploy by Task 5: `curl -I https://<URL>/.planning/PROJECT.md` MUST return 404. Ordering invariant: `.vercelignore` is committed in Task 3 BEFORE the human push in Task 4 — so the very first deploy artifact is clean. |
-| T-01-04-02 | Tampering | Browser-rendered page | mitigate | CSP `script-src 'self' https://us-assets.i.posthog.com` exact-match (Task 1) — no wildcard, no `'unsafe-inline'` on script-src, no `'unsafe-eval'`. PostHog is the only third-party origin allowed to execute script, and it's only allowed because Phase 3 will load it. Verified post-deploy by Task 5: `grep -i 'content-security-policy:.*us-assets\.i\.posthog\.com'` AND `grep -v` for any `cdn.tailwindcss.com` or other third-party hosts. |
-| T-01-04-03 | Information Disclosure | Sketch HTML files in `.planning/sketches/` | mitigate | Sketches load Tailwind via CDN (D-01) — if they shipped, both leak pre-launch design AND introduce an uncontrolled CDN dependency that the production CSP forbids (so even if shipped, they wouldn't render). Mitigated by `.vercelignore` excluding all of `.planning/` (Task 2). Verified by Task 5: `curl -I https://<URL>/.planning/sketches/sketch-a-confident-direct.html` returns 404. |
-| T-01-04-04 | Elevation of Privilege | Repo `main` branch | mitigate | Branch protection enabled in Task 4 step (c) per D-15: `allow_force_pushes: false`, `allow_deletions: false`. Verified by `gh api .../branches/main/protection --jq '.allow_force_pushes.enabled'` returning `false`. Solo project — no required PR reviews, just history-integrity protection. |
-| T-01-04-05 | Information Disclosure | TLS / Cleartext | mitigate | `Strict-Transport-Security: max-age=31536000; includeSubDomains` (Task 1) prevents downgrade attacks across all subdomains. Vercel auto-provisions HTTPS for `*.vercel.app`; the Phase 5 apex swap to `jigspec.com` will inherit HSTS. Verified by Task 5: `grep -i '^strict-transport-security:.*max-age=31536000' /tmp/jigspec-headers.txt`. |
-| T-01-04-06 | Spoofing | Iframe embedding | mitigate | `X-Frame-Options: DENY` (Task 1) plus CSP `frame-ancestors 'none'` block all framing. No clickjacking surface. Verified by Task 5: `grep -i '^x-frame-options: DENY'`. |
-| T-01-04-07 | Tampering | MIME sniffing | mitigate | `X-Content-Type-Options: nosniff` (Task 1) prevents browsers from re-interpreting response content type. Verified by Task 5: `grep -i '^x-content-type-options: nosniff'`. |
-| T-01-04-08 | Information Disclosure | Referer leakage | accept | `Referrer-Policy: strict-origin-when-cross-origin` (Task 1) — origin only on cross-origin, full URL on same-origin. Standard posture. No PII in URLs in Phase 1, and Phase 3 forms POST to PostHog (a separate origin), so the referrer-from-form-submit signal is the origin only. Acceptable. |
+| Threat ID | Category | Component | Severity | Disposition | Mitigation Plan |
+|-----------|----------|-----------|----------|-------------|-----------------|
+| T-01-04-01 | Information Disclosure | Vercel deploy artifact | high | mitigate | `.vercelignore` excludes `.planning/`, `.git/`, `node_modules/`, `.claude/` (Task 2 per D-21). `vercel.json` adds `/.planning/(.*)` -> `/404` redirect as defense-in-depth (Task 1 per D-20). Verified post-deploy by Task 5: `curl -I https://<URL>/.planning/PROJECT.md` MUST return 404. Ordering invariant: `.vercelignore` is committed in Task 3 BEFORE the human push in Task 4 — so the very first deploy artifact is clean. Severity high because `.planning/` contains pre-launch product positioning, deferred-idea decisions, and competitive context the company has not chosen to publish. |
+| T-01-04-02 | Tampering | Browser-rendered page | medium | mitigate | CSP `script-src 'self' https://us-assets.i.posthog.com` exact-match (Task 1) — no wildcard, no `'unsafe-inline'` on script-src, no `'unsafe-eval'`. PostHog is the only third-party origin allowed to execute script, and it's only allowed because Phase 3 will load it. Verified post-deploy by Task 5: `grep -i 'content-security-policy:.*us-assets\.i\.posthog\.com'` AND `grep -v` for any `cdn.tailwindcss.com` or other third-party hosts. Severity medium because Phase 1 ships zero scripts beyond the Astro shell; CSP misconfig only becomes high-severity once Phase 3 loads PostHog and forms accept user input. |
+| T-01-04-03 | Information Disclosure | Sketch HTML files in `.planning/sketches/` | medium | mitigate | Sketches load Tailwind via CDN (D-01) — if they shipped, both leak pre-launch design AND introduce an uncontrolled CDN dependency that the production CSP forbids (so even if shipped, they wouldn't render). Mitigated by `.vercelignore` excluding all of `.planning/` (Task 2). Verified by Task 5: `curl -I https://<URL>/.planning/sketches/sketch-a-confident-direct.html` returns 404. Severity medium: leaked sketches are pre-launch design candidates, not production secrets, but still represent unshipped IP and competitive positioning. |
+| T-01-04-04 | Elevation of Privilege | Repo `main` branch | medium | mitigate | Branch protection enabled in Task 4 step (c) per D-15: `allow_force_pushes: false`, `allow_deletions: false`. Verified by `gh api .../branches/main/protection --jq '.allow_force_pushes.enabled'` returning `false`. Solo project — no required PR reviews, just history-integrity protection. Severity medium because force-push could re-introduce excluded files into a deploy artifact, but the deploy artifact is also gated by `.vercelignore` (defense in depth — both would have to fail). |
+| T-01-04-05 | Information Disclosure | TLS / Cleartext | high | mitigate | `Strict-Transport-Security: max-age=31536000; includeSubDomains` (Task 1) prevents downgrade attacks across all subdomains. Vercel auto-provisions HTTPS for `*.vercel.app`; the Phase 5 apex swap to `jigspec.com` will inherit HSTS. Verified by Task 5: `grep -i '^strict-transport-security:.*max-age=31536000' /tmp/jigspec-headers.txt`. Severity high because TLS downgrade across the apex domain (post-Phase 5) would expose all subsequent visitor traffic (including PostHog event POSTs containing email and free-text problem pitches) to passive interception. |
+| T-01-04-06 | Spoofing | Iframe embedding | medium | mitigate | `X-Frame-Options: DENY` (Task 1) plus CSP `frame-ancestors 'none'` block all framing. No clickjacking surface. Verified by Task 5: `grep -i '^x-frame-options: DENY'`. Severity medium: clickjacking on a marketing page is low immediate impact, but blocking it is cheap and prevents UI-redress attacks against the future signup forms. |
+| T-01-04-07 | Tampering | MIME sniffing | low | mitigate | `X-Content-Type-Options: nosniff` (Task 1) prevents browsers from re-interpreting response content type. Verified by Task 5: `grep -i '^x-content-type-options: nosniff'`. Severity low for a static-only site (no user-uploaded content), but still a free hardening win and required for ASVS L1 baseline. |
+| T-01-04-08 | Information Disclosure | Referer leakage | low | accept | `Referrer-Policy: strict-origin-when-cross-origin` (Task 1) — origin only on cross-origin, full URL on same-origin. Standard posture. No PII in URLs in Phase 1, and Phase 3 forms POST to PostHog (a separate origin), so the referrer-from-form-submit signal is the origin only. Acceptable. Severity low: no path-level data is sensitive, and the chosen policy already minimizes cross-origin leakage to origin-only. |
 
-All threats have a disposition. T-01-04-08 is `accept` with rationale; the rest are `mitigate` with specific implementation tasks and verification commands.
+All threats have a disposition. Severity column uses the heuristic: high = production secret/PII or apex-traffic exposure; medium = pre-launch context, CSP/header bypass, or branch-history integrity; low = defense-in-depth on already-mitigated surface or no-PII referrer. T-01-04-08 is `accept` with rationale; the rest are `mitigate` with specific implementation tasks and verification commands.
 </threat_model>
 
 <verification>

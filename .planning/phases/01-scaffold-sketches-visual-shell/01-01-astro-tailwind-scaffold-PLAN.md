@@ -117,10 +117,24 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
     yes n | npm create astro@latest -- . --template minimal --typescript strict --install
     ```
 
+    Before scaffolding, capture the current git HEAD so we can verify post-scaffold that pre-existing history was preserved:
+
+    ```bash
+    git rev-parse HEAD > /tmp/jigspec-pre-scaffold-head.txt
+    ```
+
     After the scaffold completes, verify it did NOT delete `LICENSE`, `CLAUDE.md`, or `.planning/`:
 
     ```bash
     test -f LICENSE && test -f CLAUDE.md && test -d .planning || (echo "FATAL: scaffold clobbered protected files" && exit 1)
+    ```
+
+    Verify `.git/` was preserved (the create-astro CLI's `--git --no` flag handling is non-obvious and version-dependent):
+
+    ```bash
+    test -f .git/HEAD && git log -1 --oneline || (echo "FATAL: scaffold destroyed git history" && exit 1)
+    # Confirm HEAD either matches pre-scaffold OR sits on top of pre-existing history (no detached/orphan branch)
+    git merge-base --is-ancestor "$(cat /tmp/jigspec-pre-scaffold-head.txt)" HEAD || (echo "FATAL: pre-scaffold commit not reachable from current HEAD" && exit 1)
     ```
 
     The Astro minimal template should produce: `package.json`, `tsconfig.json`, `astro.config.mjs`, `src/env.d.ts`, `src/pages/index.astro`, `public/favicon.svg`, and a `.gitignore`. README.md is OVERWRITTEN by the scaffold — don't worry, Task 5 replaces it with our project description.
@@ -154,6 +168,22 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
   <verify>
     <automated>test -f package.json && test -f tsconfig.json && test -f astro.config.mjs && grep -E '"astro":\s*"\^6' package.json && grep -v '^[[:space:]]*//' tsconfig.json | grep -q 'astro/tsconfigs/strict' && test -f LICENSE && test -d .planning</automated>
   </verify>
+  <acceptance_criteria>
+    - File `package.json` exists.
+    - File `tsconfig.json` exists.
+    - File `astro.config.mjs` exists.
+    - File `src/env.d.ts` exists (Astro minimal template default).
+    - File `src/pages/index.astro` exists (Astro minimal template default).
+    - `package.json` matches `grep -E '"astro":\s*"\^6'` (Astro version pinned to `^6` per D-17).
+    - `tsconfig.json` (with comment lines stripped via `grep -v '^[[:space:]]*//'`) contains `astro/tsconfigs/strict` (NOT `base`, NOT `strictest` — per D-17).
+    - File `LICENSE` exists (NOT clobbered by scaffold per D-22).
+    - File `CLAUDE.md` exists (NOT clobbered by scaffold).
+    - Directory `.planning/` exists (NOT clobbered by scaffold).
+    - Directory `node_modules/` exists (npm install ran successfully via `--install` flag).
+    - File `.git/HEAD` exists (git directory survived scaffold).
+    - `git log -1 --oneline` exits 0 (pre-existing commits are still reachable).
+    - `git merge-base --is-ancestor "$(cat /tmp/jigspec-pre-scaffold-head.txt)" HEAD` exits 0 (current HEAD is the pre-scaffold commit OR a descendant of it — no detached/orphan branch).
+  </acceptance_criteria>
   <done>
     - `package.json` exists with `"astro": "^6.x"` in `dependencies`
     - `tsconfig.json` exists and extends `astro/tsconfigs/strict` (NOT `base`, NOT `strictest` — exactly `strict` per D-17)
@@ -208,6 +238,13 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
   <verify>
     <automated>grep -E '"tailwindcss":\s*"\^4' package.json && grep -E '"@tailwindcss/vite":\s*"\^4' package.json && ! grep -q '"@astrojs/tailwind"' package.json</automated>
   </verify>
+  <acceptance_criteria>
+    - `package.json` matches `grep -E '"tailwindcss":\s*"\^4'` (Tailwind pinned to `^4` per D-18).
+    - `package.json` matches `grep -E '"@tailwindcss/vite":\s*"\^4'` (Vite plugin pinned to `^4` per D-18).
+    - `package.json` does NOT contain `"@astrojs/tailwind"` (deprecated v3 integration — forbidden by CLAUDE.md "What NOT to Use" + D-18).
+    - File `package-lock.json` exists (npm install persisted the dependency tree).
+    - File `tailwind.config.js` does NOT exist at the repo root (Tailwind 4 is CSS-first; this file would indicate v3 misconfiguration).
+  </acceptance_criteria>
   <done>
     - `package.json` `devDependencies` contains `"tailwindcss": "^4.x"` and `"@tailwindcss/vite": "^4.x"`
     - `package.json` does NOT contain `@astrojs/tailwind` anywhere (deps, devDeps, peerDeps)
@@ -271,6 +308,16 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
   <verify>
     <automated>grep -F "site: 'https://jigspec.com'" astro.config.mjs && grep -F "output: 'static'" astro.config.mjs && grep -F "from '@tailwindcss/vite'" astro.config.mjs && grep -F "tailwindcss()" astro.config.mjs && ! grep -q "@astrojs/tailwind" astro.config.mjs && ! grep -qE "from '@astrojs/(mdx|sitemap|vercel)'" astro.config.mjs && ! grep -q "from 'astro-mermaid'" astro.config.mjs</automated>
   </verify>
+  <acceptance_criteria>
+    - File `astro.config.mjs` contains the literal `site: 'https://jigspec.com'` (per D-19).
+    - File `astro.config.mjs` contains the literal `output: 'static'` (per D-19).
+    - File `astro.config.mjs` contains the literal `from '@tailwindcss/vite'` (Tailwind 4 default-export import).
+    - File `astro.config.mjs` contains the literal `tailwindcss()` (plugin invocation inside `vite.plugins`).
+    - File `astro.config.mjs` contains the literal `// @ts-check` (TypeScript-checking pragma at top).
+    - File `astro.config.mjs` does NOT match `grep -qE "from '@astrojs/(mdx|sitemap|vercel)'"` (no MDX, sitemap, or Vercel integrations in Phase 1).
+    - File `astro.config.mjs` does NOT contain `from 'astro-mermaid'` (Mermaid deferred to Phase 4).
+    - File `astro.config.mjs` does NOT contain `@astrojs/tailwind` (deprecated v3 integration — forbidden).
+  </acceptance_criteria>
   <done>
     - `astro.config.mjs` contains the exact lines `site: 'https://jigspec.com'`, `output: 'static'`, `import tailwindcss from '@tailwindcss/vite';`, and `tailwindcss()` inside `vite.plugins`
     - File does NOT import any other Astro integrations (mdx, sitemap, vercel, astro-mermaid) — those are deferred to Phases 2/3/4
@@ -315,6 +362,13 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
   <verify>
     <automated>test -f src/styles/global.css && grep -F '@import "tailwindcss"' src/styles/global.css && test "$(wc -l < src/styles/global.css | tr -d ' ')" -le 2</automated>
   </verify>
+  <acceptance_criteria>
+    - File `src/styles/global.css` exists.
+    - File `src/styles/global.css` contains the literal `@import "tailwindcss"` (Tailwind 4 CSS-first entry directive).
+    - File `src/styles/global.css` is at most 2 lines (`wc -l` ≤ 2 — keeps Phase 1 minimal; Plans 01-02/01-03 own additions).
+    - File `src/styles/global.css` does NOT contain `@tailwind base` (Tailwind 3 syntax — would break on v4).
+    - File `src/styles/global.css` does NOT contain `@theme` or `@layer` (deferred to Plans 01-02 / 01-03).
+  </acceptance_criteria>
   <done>
     - `src/styles/global.css` exists and contains exactly `@import "tailwindcss";` (one substantive line; trailing newline OK)
     - File contains NO `@tailwind base/components/utilities` directives (Tailwind 3 syntax — would be wrong on v4)
@@ -425,6 +479,17 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
   <verify>
     <automated>grep -F 'JigSpec Landing Page' README.md && grep -F '.planning/PROJECT.md' README.md && grep -F 'Astro 6 + Tailwind 4' README.md && grep -F 'node_modules' .gitignore && grep -F 'dist' .gitignore && grep -F '.astro' .gitignore && grep -F '.env' .gitignore</automated>
   </verify>
+  <acceptance_criteria>
+    - File `README.md` contains the literal `JigSpec Landing Page` (project heading per D-22).
+    - File `README.md` contains the literal `.planning/PROJECT.md` (pointer to canonical project context per D-22).
+    - File `README.md` contains the literal `Astro 6 + Tailwind 4` (stack callout — also enforces stack identity).
+    - File `.gitignore` contains `node_modules` (D-22 Node default).
+    - File `.gitignore` contains `dist` (D-22 Astro build-output default).
+    - File `.gitignore` contains `.astro` (D-22 Astro cache default).
+    - File `.gitignore` contains `.env` (secrets).
+    - File `.gitignore` contains `.DS_Store` (macOS noise).
+    - File `LICENSE` exists and is unchanged from before the plan ran (D-22 sanity — keep existing, untouched).
+  </acceptance_criteria>
   <done>
     - `README.md` contains the project description with `JigSpec Landing Page` heading, mention of `Astro 6 + Tailwind 4`, and a `.planning/PROJECT.md` pointer
     - `README.md` does NOT contain Astro template boilerplate (e.g. "Astro starter kit" headings or `npm create astro@latest` instructions for new users)
@@ -481,6 +546,13 @@ Implements requirement: **TECH-01** (Astro 6 + Tailwind 4 + TypeScript strict sc
   <verify>
     <automated>npm install --silent && npx astro check && npm run build && test -d dist && test -f dist/index.html</automated>
   </verify>
+  <acceptance_criteria>
+    - `npm install --silent` exits 0 (dependency tree resolves cleanly).
+    - `npx astro check` exits 0 (TypeScript strict + Astro type-check passes).
+    - `npm run build` exits 0 (Astro static build succeeds).
+    - Directory `dist/` exists (build output landed at the expected location).
+    - File `dist/index.html` exists (Astro rendered the scaffold's default page end-to-end — proves the full pipeline runs, not just that `dist/` was created empty).
+  </acceptance_criteria>
   <done>
     - `npm install` exits 0
     - `npx astro check` exits 0 with zero errors and zero warnings (info-level messages OK)
@@ -566,4 +638,5 @@ After completion, create `.planning/phases/01-scaffold-sketches-visual-shell/01-
 - Any deviations from D-17 / D-18 / D-19 / D-22 (expected: zero — but record any pre-existing scaffold artifacts that influenced the result, like Astro defaulting `tsconfig.json` to `base` instead of `strict`)
 - Confirmation that LICENSE survived untouched (D-22 sanity check)
 - Build artifacts produced (size of `dist/`, what `dist/index.html` contains — should be the Astro minimal-template default Hello World)
+</output>
 </output>
