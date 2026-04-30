@@ -1,43 +1,25 @@
-# Astro Starter Kit: Minimal
+# JigSpec Landing Page
+
+Company-level marketing site for JigSpec — the proprietary agentic-AI runtime
+and product studio behind the open `.pipe.yaml` spec and individual products
+like `buggerd`.
+
+Built with Astro 6 + Tailwind 4. Deployed to Vercel, fronted by Cloudflare DNS.
+
+See `.planning/PROJECT.md` for full project context, constraints, and the
+success criteria this site is designed to satisfy. See `.planning/ROADMAP.md`
+for the phased delivery plan, and `CLAUDE.md` for the technology-stack
+decisions and contributor instructions.
+
+## Local development
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev      # start the Astro dev server
+npm run build    # produce a static build in ./dist
+npm run preview  # preview the production build locally
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## License
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+See `LICENSE` (MIT).
