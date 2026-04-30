@@ -6,9 +6,9 @@ const links = [
 ];
 ---
 
-<header class="border-b border-[var(--color-muted)]/20">
+<header class="border-b border-muted/20">
   <nav class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between" aria-label="Primary">
-    <a href="/" class="font-[var(--font-display)] text-2xl tracking-tight text-[var(--color-fg)]">
+    <a href="/" class="font-display text-2xl tracking-tight text-fg">
       JigSpec
     </a>
 
@@ -17,7 +17,7 @@ const links = [
         <li>
           <a
             href={link.href}
-            class="text-sm text-[var(--color-fg)] hover:text-[var(--color-accent)] transition-colors"
+            class="text-sm text-fg hover:text-accent transition-colors"
           >
             {link.label}
           </a>
@@ -28,7 +28,7 @@ const links = [
     <button
       id="nav-toggle"
       type="button"
-      class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded text-[var(--color-fg)] hover:bg-[var(--color-muted)]/10"
+      class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded text-fg hover:bg-muted/10"
       aria-label="Toggle menu"
       aria-expanded="false"
       aria-controls="nav-mobile-menu"
@@ -43,13 +43,13 @@ const links = [
 
   <ul
     id="nav-mobile-menu"
-    class="md:hidden hidden flex-col gap-2 px-6 pb-5 border-t border-[var(--color-muted)]/20"
+    class="md:hidden hidden flex-col gap-2 px-6 pb-5 border-t border-muted/20"
   >
     {links.map((link) => (
       <li>
         <a
           href={link.href}
-          class="block py-2 text-base text-[var(--color-fg)] hover:text-[var(--color-accent)] transition-colors"
+          class="block py-2 text-base text-fg hover:text-accent transition-colors"
         >
           {link.label}
         </a>
