@@ -1,0 +1,16 @@
+# NOTE: The live deployment is configured via vercel.json at repo root.
+# This file (.vercelignore) is read natively by Vercel and excludes the
+# listed paths from the deployed artifact.
+
+# Planning docs are never served.
+.planning/
+
+# Git internals (Vercel already ignores these; explicit for safety).
+.git/
+
+# Build dependencies — Vercel runs npm install itself.
+node_modules/
+
+# Claude Code configuration / project instructions; never served.
+.claude/
+CLAUDE.md
