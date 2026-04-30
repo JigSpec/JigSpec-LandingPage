@@ -23,10 +23,13 @@ must_haves:
   truths:
     - "`npm run build` succeeds end-to-end and produces a `dist/` directory"
     - "Tailwind 4 imports resolve at build time (`@import \"tailwindcss\"` in global CSS works)"
-    - "TypeScript strict mode is active (tsconfig.json extends astro/tsconfigs/strict)"
+    - "TypeScript strict mode is active (tsconfig.json extends astro/tsconfigs/strict, per D-17)"
+    - "Astro init was invoked with the locked flags per D-17 (--template minimal --typescript strict --install --git --no), preserving pre-scaffold .git, LICENSE, CLAUDE.md, and .planning/"
     - "@astrojs/tailwind is NOT installed (forbidden by Tailwind 4 + STACK.md)"
+    - "Phase 1 dependency surface is exactly tailwindcss + @tailwindcss/vite per D-18 — posthog-js, astro-mermaid, mermaid, @astrojs/mdx, @astrojs/sitemap are NOT installed (those are owned by Phases 2/3/4)"
     - "No font CDN configured at scaffold level (TECH-05 honored — no Google Fonts in <head>)"
-    - "astro.config.mjs declares site: 'https://jigspec.com' and output: 'static'"
+    - "astro.config.mjs declares site: 'https://jigspec.com', output: 'static', and vite.plugins: [tailwindcss()] per D-19 (no integrations array — mermaid/mdx/sitemap arrive in their respective phases)"
+    - "Repo-root files per D-22: README.md replaces the placeholder with a brief description + .planning/PROJECT.md pointer; LICENSE is preserved untouched; .gitignore covers Node + Astro defaults"
   artifacts:
     - path: "package.json"
       provides: "Astro 6 + Tailwind 4 + @tailwindcss/vite dependencies"

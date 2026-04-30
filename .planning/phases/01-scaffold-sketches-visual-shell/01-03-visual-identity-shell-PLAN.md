@@ -26,9 +26,12 @@ must_haves:
     - "All chosen typefaces are self-hosted via Astro Fonts API (zero external font CDN per TECH-05)"
     - "Tailwind 4 @theme declares ≤4 colors total (bg, fg, muted, accent) and a 3-element type scale (display, body, micro)"
     - "Typeface is not ui-monospace and accent is not emerald-600 — chrome reads as distinct from buggerd (VISUAL-03)"
-    - "Shell renders legibly at 320 / 375 / 414 / 1280 viewports with nav collapsing below 768px (VISUAL-04)"
+    - "Shell renders legibly at 320 / 375 / 414 / 1280 viewports with nav collapsing below 768px (VISUAL-04, per D-25 — Tailwind defaults sm/md/lg/xl/2xl at 640/768/1024/1280/1536, manual DevTools verification, no test framework wired in Phase 1)"
+    - "Phase 1 ships only the three components from D-23: src/layouts/Base.astro + src/components/global/Nav.astro (text wordmark + 3 placeholder anchor links + mobile hamburger <768px) + src/components/global/Footer.astro (placeholder docs link + contact email + copyright + GitHub org link). NO ProductCard / MermaidDiagram / InterestForm / sections — those belong to Phases 2/3/4."
     - "index.astro is composition-only (Base + Nav + h1 placeholder + Footer) — no hero, no cards, no sections (D-24)"
     - "<html data-theme> attribute is wired so Phase 4 can validate dark mode without re-architecting"
+    - "Dark mode follows D-10: system-preference auto via <html data-theme> + Tailwind darkMode: 'media' (NOT 'class'); NO toggle UI ships in v1 (Mermaid in Phase 4 wires off the same attribute)"
+    - "Per D-11, dark theme palette is NOT designed in Phase 1 — sketches are light-only, dark theme is auto-derived (bg → near-black, fg → light, accent unchanged), validated visually only in Phase 4 polish; if auto-derivation fails the polish gate, dark mode is dropped from v1 (light-only fallback)"
     - "npx astro check exits 0 and npm run build exits 0 after the plan completes"
   artifacts:
     - path: ".planning/PROJECT.md"

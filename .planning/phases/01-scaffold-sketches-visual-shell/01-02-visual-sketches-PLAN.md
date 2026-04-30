@@ -13,11 +13,13 @@ requirements: [VISUAL-01]
 
 must_haves:
   truths:
-    - "Both sketch files exist at the locked paths under .planning/sketches/ and open directly in a browser with no build step."
+    - "Both sketch files exist at the locked paths under .planning/sketches/ as standalone static HTML with Tailwind via CDN script tag, no build step, no shared assets — throwaway artifacts NOT in production (per D-01)."
+    - "Sketches were handwritten as HTML+Tailwind by Claude directly, NOT produced via the /gsd-sketch skill (per D-05) — one consistent comparator, no stylistic drift between invocations."
     - "Both sketches render identical placeholder content (header, hero, buggerd card, diagram-1 placeholder, footer, mobile-preview section) in identical structural order."
     - "Differences between sketches are limited to typography, accent color, layout chrome, and hero copy posture (per D-02)."
     - "All visible body/headline copy is bracketed placeholder copy (per D-03) — no Phase 2 final copy, no fake testimonials, no fabricated metrics, no 'trusted by' patterns."
     - "Sketch A uses Inter Tight 700 display + Inter 400 body + warm accent (#F59E0B). Sketch B uses Crimson Pro 600 display + Inter 400 body + cool accent (#6366F1). Neither uses emerald or teal-emerald-adjacent accents (per D-08, D-09)."
+    - "Visual posture anchors on the priority-ordered references in D-06 (Anthropic homepage → PostHog → Stratechery) and explicitly avoids the anti-references in D-07 (Vercel.com, Linear.app, n8n.io, buggerd's landing, The Verge)."
     - "Each sketch is intentionally visually distinct from buggerd's index.html (different typeface and different accent — buggerd uses zinc/emerald monospace; sketches use grotesque-or-serif sans + warm/cool accent)."
     - "User has reviewed both sketches in a browser and reported back which direction (A or B) to carry into Plan 01-03."
   artifacts:
