@@ -32,6 +32,7 @@ must_haves:
       to: "https://cdn.tailwindcss.com"
       via: "<script src=\"https://cdn.tailwindcss.com\"></script>"
       pattern: "cdn\\.tailwindcss\\.com"
+      note: "CDN link is confined to .planning/sketches/*.html and is excluded from the production deploy artifact by Plan 01-04's .vercelignore (D-21). Plan 01-04 threat model T-01-04-03 covers the leak path. CLAUDE.md/STACK.md forbid this CDN in the production Astro project — that constraint is honored because no src/ file references it."
     - from: "Both sketch product cards"
       to: "https://buggerd.com"
       via: "anchor tag with target=\"_blank\""
@@ -315,6 +316,12 @@ Class hygiene: same as Sketch A — all classes inline, no `@apply`, custom CSS 
   <verify>
     <automated>test -f .planning/sketches/sketch-a-confident-direct.html &amp;&amp; test -f .planning/sketches/sketch-b-engineering-blog-pragmatic.html</automated>
   </verify>
+  <acceptance_criteria>
+    - Both sketch files exist on disk: `test -f .planning/sketches/sketch-a-confident-direct.html` AND `test -f .planning/sketches/sketch-b-engineering-blog-pragmatic.html`.
+    - User reply matches `^(A|B|REVISE:.*)$` (captured by the resume-signal pattern below).
+    - Chosen direction string is recorded in `.planning/phases/01-scaffold-sketches-visual-shell/01-02-visual-sketches-SUMMARY.md` (grep for `Direction: A` or `Direction: B` or `Direction: REVISE`).
+    - Plan 01-03 Task 1 will read this SUMMARY.md to branch the typography + palette config — verified by Plan 01-03's own acceptance_criteria.
+  </acceptance_criteria>
   <done>User has replied with `A`, `B`, or `REVISE: &lt;note&gt;` and the choice is recorded in 01-02-visual-sketches-SUMMARY.md.</done>
   <what-built>
     Two self-contained HTML sketches:
