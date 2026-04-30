@@ -1,0 +1,1000 @@
+---
+id: 01-03-visual-identity-shell
+phase: 01
+plan: 03
+type: execute
+wave: 2
+depends_on: [01-01-astro-tailwind-scaffold, 01-02-visual-sketches]
+files_modified:
+  - .planning/PROJECT.md
+  - astro.config.mjs
+  - src/styles/global.css
+  - src/layouts/Base.astro
+  - src/components/global/Nav.astro
+  - src/components/global/Footer.astro
+  - src/pages/index.astro
+  - .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-320.png
+  - .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-375.png
+  - .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-414.png
+  - .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-1280.png
+autonomous: false
+requirements: [TECH-05, VISUAL-02, VISUAL-03, VISUAL-04]
+
+must_haves:
+  truths:
+    - "Sketch direction (A or B) is recorded as a Key Decision row in PROJECT.md before any production styling lands"
+    - "All chosen typefaces are self-hosted via Astro Fonts API (zero external font CDN per TECH-05)"
+    - "Tailwind 4 @theme declares ≤4 colors total (bg, fg, muted, accent) and a 3-element type scale (display, body, micro)"
+    - "Typeface is not ui-monospace and accent is not emerald-600 — chrome reads as distinct from buggerd (VISUAL-03)"
+    - "Shell renders legibly at 320 / 375 / 414 / 1280 viewports with nav collapsing below 768px (VISUAL-04)"
+    - "index.astro is composition-only (Base + Nav + h1 placeholder + Footer) — no hero, no cards, no sections (D-24)"
+    - "<html data-theme> attribute is wired so Phase 4 can validate dark mode without re-architecting"
+    - "npx astro check exits 0 and npm run build exits 0 after the plan completes"
+  artifacts:
+    - path: ".planning/PROJECT.md"
+      provides: "Key Decisions table row recording chosen sketch direction"
+      contains: "sketch direction"
+    - path: "astro.config.mjs"
+      provides: "Astro Fonts API config for chosen direction's display + body faces"
+      contains: "experimental: { fonts:"
+    - path: "src/styles/global.css"
+      provides: "Tailwind 4 @theme tokens (≤4 colors, 3-element type scale) + @import 'tailwindcss'"
+      contains: "@theme"
+      min_lines: 15
+    - path: "src/layouts/Base.astro"
+      provides: "HTML5 document shell, font loading, data-theme plumbing, slot"
+      contains: "<slot"
+      min_lines: 25
+    - path: "src/components/global/Nav.astro"
+      provides: "JigSpec wordmark + 3 placeholder anchor links + mobile hamburger toggle"
+      contains: "md:hidden"
+      min_lines: 30
+    - path: "src/components/global/Footer.astro"
+      provides: "docs link, contact email, copyright, GitHub org link"
+      contains: "github.com/JigSpec"
+      min_lines: 10
+    - path: "src/pages/index.astro"
+      provides: "Composition-only landing: Base + Nav + h1 + Footer"
+      contains: "coming soon"
+  key_links:
+    - from: "src/pages/index.astro"
+      to: "src/layouts/Base.astro"
+      via: "import + <Base> wrapper"
+      pattern: "import Base from"
+    - from: "src/layouts/Base.astro"
+      to: "src/styles/global.css"
+      via: "import in frontmatter"
+      pattern: "import.*global\\.css"
+    - from: "src/layouts/Base.astro"
+      to: "Astro Fonts API"
+      via: "<Font> component for display + body"
+      pattern: "from ['\"]astro:assets['\"]|from ['\"]astro:fonts['\"]"
+    - from: "src/components/global/Nav.astro"
+      to: "mobile hamburger toggle"
+      via: "vanilla JS click listener flipping menu visibility"
+      pattern: "addEventListener\\(['\"]click"
+---
+
+<objective>
+Apply the chosen sketch direction (A or B from plan 01-02) to the production Astro project: record the choice in PROJECT.md, configure Astro Fonts API to self-host the chosen direction's faces (TECH-05 — zero external font CDN), wire Tailwind 4 `@theme` tokens (≤4 colors, 3-element typographic scale, system-pref dark via `darkMode: 'media'`), write `Base.astro` + `Nav.astro` + `Footer.astro`, and render a minimal composition-only `index.astro` (just `<h1>JigSpec — coming soon</h1>`). Verify legibility at 320 / 375 / 414 / 1280 via `npm run dev`.
+
+Purpose: Lock the visual identity before any content lands so subsequent phases cannot drift. Ship the production shell that fills the gap between scaffold (plan 01-01) and content composition (Phase 2).
+
+Output: Production-ready Astro shell with self-hosted typography, locked palette tokens, responsive nav/footer, and `<html data-theme>` plumbing for Phase 4 dark-mode validation.
+</objective>
+
+<execution_context>
+@$HOME/.claude/get-shit-done/workflows/execute-plan.md
+@$HOME/.claude/get-shit-done/templates/summary.md
+</execution_context>
+
+<context>
+@.planning/PROJECT.md
+@.planning/ROADMAP.md
+@.planning/STATE.md
+@.planning/REQUIREMENTS.md
+@.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md
+@CLAUDE.md
+@.planning/sketches/sketch-a-confident-direct.html
+@.planning/sketches/sketch-b-engineering-blog-pragmatic.html
+
+<interfaces>
+<!-- Astro 6 Fonts API (experimental.fonts) — embed <Font> components in Base.astro. -->
+<!-- Astro 6 Fonts API is exposed via "astro:assets" until promoted to stable; the import path may differ in the project's installed version. -->
+<!-- The executor MUST verify the import path against `node_modules/astro/types.d.ts` or astro.config.mjs typegen output. As of Astro 6.1, the path is `astro:assets` for the <Font> component. -->
+
+Astro 6 experimental.fonts config shape (in astro.config.mjs):
+```typescript
+experimental: {
+  fonts: [
+    {
+      provider: fontProviders.google(),       // imported from 'astro/config'
+      name: '<font family name>',
+      cssVariable: '--font-display',           // matches @theme variable
+      weights: ['700'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+    // ...repeat for body face
+  ],
+}
+```
+
+Astro 6 <Font> component usage (in Base.astro <head>):
+```astro
+---
+import { Font } from 'astro:assets';
+---
+<Font cssVariable="--font-display" preload />
+<Font cssVariable="--font-body" preload />
+```
+
+Tailwind 4 @theme block (in src/styles/global.css):
+```css
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #FAFAF8;
+  --color-fg: #18181B;
+  --color-muted: #71717A;
+  --color-accent: <branch on direction>;
+
+  --font-display: <branch on direction>, system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-micro: ui-monospace, SFMono-Regular, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-bg: #0A0A0A;
+    --color-fg: #FAFAFA;
+    --color-muted: #A1A1AA;
+  }
+}
+```
+</interfaces>
+</context>
+
+<tasks>
+
+<task type="checkpoint:decision" gate="blocking">
+  <name>Task 1: Record chosen sketch direction in PROJECT.md Key Decisions</name>
+  <files>.planning/PROJECT.md</files>
+  <read_first>
+    - `.planning/PROJECT.md` lines 73-91 (existing Key Decisions table format)
+    - `.planning/sketches/sketch-a-confident-direct.html` (review the rendered direction A)
+    - `.planning/sketches/sketch-b-engineering-blog-pragmatic.html` (review the rendered direction B)
+  </read_first>
+  <decision>Which sketch direction does the production shell adopt — A (Confident & Direct: Inter Tight + warm accent) or B (Engineering-Blog Pragmatic: Crimson Pro + cool accent)?</decision>
+  <context>
+    Plan 01-02 produced two static-HTML sketches at desktop+mobile widths. The user must pick one before any production typography or palette tokens are written. The choice is locked into PROJECT.md as a Key Decision so future phases inherit the constraint.
+
+    **Direction A — Confident & Direct (warm):**
+    - Display: Inter Tight 700
+    - Body: Inter 400
+    - Accent: `#F59E0B` (warm amber)
+    - Background: `#FAFAF8` (near-white)
+    - Vibe: declarative, opinionated engineering-company front page
+
+    **Direction B — Engineering-Blog Pragmatic (cool):**
+    - Display: Crimson Pro 600 (serif)
+    - Body: Inter 400
+    - Accent: `#6366F1` (cool indigo)
+    - Background: `#FAFAF8` (near-white)
+    - Vibe: Stratechery-style essay lede, more setup, more reflective
+  </context>
+  <options>
+    <option id="direction-a">
+      <name>Direction A — Confident & Direct (Inter Tight + warm amber)</name>
+      <pros>Stronger declarative tone; matches "we built this, here's why it works" voice candidate; cleaner read on small screens; geometric grotesque is forgiving across devices.</pros>
+      <cons>Less editorial-feeling than Direction B; warm accent reads slightly more SaaS-marketing if not handled with restraint.</cons>
+    </option>
+    <option id="direction-b">
+      <name>Direction B — Engineering-Blog Pragmatic (Crimson Pro + cool indigo)</name>
+      <pros>Strongest editorial signal — serif display reads as essay-like; cool accent is calmer; matches Stratechery anchor reference (D-06).</pros>
+      <cons>Crimson Pro hinting on Windows can be soft below 22px; serif display sets a higher bar for body copy quality (Phase 2 risk).</cons>
+    </option>
+  </options>
+  <action>
+    Append exactly one row to the Key Decisions table in `.planning/PROJECT.md`. The table starts at line 75 (header) and the last row currently ends at line 90.
+
+    **If user selects direction-a:** insert this row immediately above line 92 (the `## Evolution` header):
+
+    ```markdown
+    | Visual direction: Sketch A — Confident & Direct (Inter Tight 700 display + Inter 400 body, warm amber accent #F59E0B on near-white #FAFAF8) | Picked from two-sketch comparison in Phase 1; declarative-claim posture matches voice candidate (1); geometric grotesque is the lower-risk pick for visual-taste-mitigation per PITFALLS.md §Pitfall 7 | — Locked Phase 1 |
+    ```
+
+    **If user selects direction-b:** insert this row instead:
+
+    ```markdown
+    | Visual direction: Sketch B — Engineering-Blog Pragmatic (Crimson Pro 600 display + Inter 400 body, cool indigo accent #6366F1 on near-white #FAFAF8) | Picked from two-sketch comparison in Phase 1; editorial serif posture matches Stratechery anchor (D-06) and voice candidate (2); accepted Phase 2 risk that serif body copy quality bar is higher | — Locked Phase 1 |
+    ```
+
+    Use Edit tool with old_string = the existing final row of the table and new_string = existing final row + newline + the new row, OR Edit tool to insert above the `## Evolution` line. Do NOT rewrite the entire file. Per D-08/D-09, this is the locked direction for the rest of Phase 1.
+
+    After editing, save the chosen direction (A or B) for use by tasks 2-7 — every downstream task branches on it.
+  </action>
+  <resume-signal>Type "direction-a" or "direction-b" to continue. After the decision, the executor will branch tasks 2-7 on the chosen direction.</resume-signal>
+  <verify>
+    <automated>grep -E "Visual direction: Sketch [AB]" .planning/PROJECT.md && grep -E "Locked Phase 1" .planning/PROJECT.md</automated>
+  </verify>
+  <done>
+    - `.planning/PROJECT.md` contains exactly one row matching `Visual direction: Sketch [AB]`
+    - That row is in the Key Decisions table (above the `## Evolution` header)
+    - Outcome column reads `— Locked Phase 1`
+    - The chosen direction (A or B) is recorded in the executor's working state for tasks 2-7
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 2: Configure Astro Fonts API for chosen direction in astro.config.mjs</name>
+  <files>astro.config.mjs</files>
+  <read_first>
+    - `astro.config.mjs` (current contents — produced by plan 01-01)
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-19 (Astro config requirements)
+    - `CLAUDE.md` lines covering Astro Fonts API (the "Astro built-in Fonts API" row)
+    - https://docs.astro.build/en/guides/fonts/ (verify the experimental.fonts shape against the installed Astro 6.x version — read the executor's installed `node_modules/astro/package.json` version)
+  </read_first>
+  <action>
+    Edit `astro.config.mjs` to add the `experimental.fonts` config alongside the existing `site`, `output`, and `vite` keys. Branch on the direction picked in task 1:
+
+    **For direction-a (Inter Tight + Inter):**
+
+    ```javascript
+    import { defineConfig, fontProviders } from 'astro/config';
+    import tailwindcss from '@tailwindcss/vite';
+
+    export default defineConfig({
+      site: 'https://jigspec.com',
+      output: 'static',
+      vite: {
+        plugins: [tailwindcss()],
+      },
+      experimental: {
+        fonts: [
+          {
+            provider: fontProviders.google(),
+            name: 'Inter Tight',
+            cssVariable: '--font-display',
+            weights: ['700'],
+            styles: ['normal'],
+            subsets: ['latin'],
+            fallbacks: ['system-ui', 'sans-serif'],
+          },
+          {
+            provider: fontProviders.google(),
+            name: 'Inter',
+            cssVariable: '--font-body',
+            weights: ['400', '500'],
+            styles: ['normal'],
+            subsets: ['latin'],
+            fallbacks: ['system-ui', 'sans-serif'],
+          },
+        ],
+      },
+    });
+    ```
+
+    **For direction-b (Crimson Pro + Inter):**
+
+    ```javascript
+    import { defineConfig, fontProviders } from 'astro/config';
+    import tailwindcss from '@tailwindcss/vite';
+
+    export default defineConfig({
+      site: 'https://jigspec.com',
+      output: 'static',
+      vite: {
+        plugins: [tailwindcss()],
+      },
+      experimental: {
+        fonts: [
+          {
+            provider: fontProviders.google(),
+            name: 'Crimson Pro',
+            cssVariable: '--font-display',
+            weights: ['600'],
+            styles: ['normal'],
+            subsets: ['latin'],
+            fallbacks: ['ui-serif', 'Georgia', 'serif'],
+          },
+          {
+            provider: fontProviders.google(),
+            name: 'Inter',
+            cssVariable: '--font-body',
+            weights: ['400', '500'],
+            styles: ['normal'],
+            subsets: ['latin'],
+            fallbacks: ['system-ui', 'sans-serif'],
+          },
+        ],
+      },
+    });
+    ```
+
+    If `astro.config.mjs` already imports `defineConfig` without `fontProviders`, add `fontProviders` to the existing import. If the existing config uses a different stylistic shape, preserve it and add only the `experimental` block (do NOT rewrite unrelated fields).
+
+    Note (per D-19): only `site`, `output`, `vite.plugins`, and `experimental.fonts` should be present in Phase 1. NO integrations array yet — sitemap/mdx/mermaid arrive in their respective phases.
+
+    Do NOT use the deprecated `@astrojs/tailwind` integration (CLAUDE.md "What NOT to Use").
+    Do NOT use `output: 'server'` (CLAUDE.md "What NOT to Use").
+    Do NOT install or import `@astrojs/vercel` (deferred per CLAUDE.md).
+  </action>
+  <verify>
+    <automated>npx astro check 2>&1 | grep -v "^#" | tee /tmp/astro-check.log; test "${PIPESTATUS[0]}" = "0" && (grep -q "Inter Tight" astro.config.mjs && ! grep -q "Crimson Pro" astro.config.mjs) || (grep -q "Crimson Pro" astro.config.mjs && ! grep -q "Inter Tight" astro.config.mjs)</automated>
+  </verify>
+  <done>
+    - `astro.config.mjs` imports `fontProviders` from `'astro/config'`
+    - `astro.config.mjs` contains an `experimental.fonts` array with exactly two entries (display + body)
+    - For direction A: file contains `"Inter Tight"` and does NOT contain `"Crimson Pro"`
+    - For direction B: file contains `"Crimson Pro"` and does NOT contain `"Inter Tight"`
+    - Both entries set `cssVariable` to `--font-display` and `--font-body` respectively
+    - `output: 'static'` is preserved
+    - `vite.plugins` still contains `tailwindcss()`
+    - `npx astro check` exits 0
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 3: Write Tailwind 4 @theme tokens in src/styles/global.css</name>
+  <files>src/styles/global.css</files>
+  <read_first>
+    - `src/styles/global.css` (current contents — likely just `@import "tailwindcss";` from plan 01-01)
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-09, D-10, D-11
+    - The existing chosen sketch HTML file (sketch-a or sketch-b in `.planning/sketches/`) for hex value reference
+    - https://tailwindcss.com/docs/installation/framework-guides/astro (verify Tailwind 4 @theme syntax)
+  </read_first>
+  <action>
+    Replace the contents of `src/styles/global.css` with the following. Branch on direction:
+
+    **For direction-a:**
+
+    ```css
+    @import "tailwindcss";
+
+    @theme {
+      /* Palette — ≤4 colors per VISUAL-02 (D-09) */
+      --color-bg: #FAFAF8;
+      --color-fg: #18181B;
+      --color-muted: #71717A;
+      --color-accent: #F59E0B;
+
+      /* Type scale — 3 elements per VISUAL-02 (D-08) */
+      --font-display: 'Inter Tight', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-micro: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    /* Dark mode via prefers-color-scheme (D-10: media strategy, no toggle UI) */
+    /* Dark palette is auto-derived per D-11 — validated visually only in Phase 4 */
+    @media (prefers-color-scheme: dark) {
+      @theme {
+        --color-bg: #0A0A0A;
+        --color-fg: #FAFAFA;
+        --color-muted: #A1A1AA;
+        /* --color-accent unchanged per D-11 (auto-derivation, validate Phase 4) */
+      }
+    }
+
+    /* Base resets (kept minimal — Tailwind 4 preflight handles most) */
+    html {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-fg);
+    }
+    ```
+
+    **For direction-b:**
+
+    ```css
+    @import "tailwindcss";
+
+    @theme {
+      /* Palette — ≤4 colors per VISUAL-02 (D-09) */
+      --color-bg: #FAFAF8;
+      --color-fg: #18181B;
+      --color-muted: #71717A;
+      --color-accent: #6366F1;
+
+      /* Type scale — 3 elements per VISUAL-02 (D-08) */
+      --font-display: 'Crimson Pro', ui-serif, Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-micro: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    /* Dark mode via prefers-color-scheme (D-10: media strategy, no toggle UI) */
+    /* Dark palette is auto-derived per D-11 — validated visually only in Phase 4 */
+    @media (prefers-color-scheme: dark) {
+      @theme {
+        --color-bg: #0A0A0A;
+        --color-fg: #FAFAFA;
+        --color-muted: #A1A1AA;
+        /* --color-accent unchanged per D-11 (auto-derivation, validate Phase 4) */
+      }
+    }
+
+    /* Base resets (kept minimal — Tailwind 4 preflight handles most) */
+    html {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-fg);
+    }
+    ```
+
+    Note: per D-10, dark mode is `prefers-color-scheme`, NOT `class`-based. Do NOT add a `darkMode: 'class'` config or a toggle button. The `data-theme` attribute on `<html>` (set in Base.astro) is plumbing for Phase 4 visual validation — Tailwind 4 doesn't strictly require it, but Mermaid (Phase 4) reads it directly.
+
+    Total non-comment colors in the `@theme` block (light) = 4 exactly (`bg`, `fg`, `muted`, `accent`). Verify by `grep -E "^\s*--color-" src/styles/global.css | grep -v "^[[:space:]]*/\*" | head -8` returns exactly 4 lines for the light scope and 3 for the dark scope (no accent override).
+  </action>
+  <verify>
+    <automated>grep -q "@import \"tailwindcss\"" src/styles/global.css && grep -q "@theme" src/styles/global.css && grep -q "\-\-color-bg:" src/styles/global.css && grep -q "\-\-color-fg:" src/styles/global.css && grep -q "\-\-color-muted:" src/styles/global.css && grep -q "\-\-color-accent:" src/styles/global.css && grep -q "\-\-font-display:" src/styles/global.css && grep -q "\-\-font-body:" src/styles/global.css && grep -q "\-\-font-micro:" src/styles/global.css && grep -q "prefers-color-scheme: dark" src/styles/global.css && [ "$(grep -E "^\s*--color-(bg|fg|muted|accent):" src/styles/global.css | grep -v "^\s*/\*" | wc -l | tr -d ' ')" -le 7 ] && (grep -q "#F59E0B" src/styles/global.css || grep -q "#6366F1" src/styles/global.css)</automated>
+  </verify>
+  <done>
+    - `src/styles/global.css` opens with `@import "tailwindcss";`
+    - Contains an `@theme` block with exactly 4 `--color-*` declarations in light scope (`bg`, `fg`, `muted`, `accent`)
+    - Contains exactly 3 `--font-*` declarations (`display`, `body`, `micro`)
+    - For direction A: `--color-accent: #F59E0B` and display font is `'Inter Tight'`
+    - For direction B: `--color-accent: #6366F1` and display font is `'Crimson Pro'`
+    - Contains a `@media (prefers-color-scheme: dark)` block overriding `--color-bg`, `--color-fg`, `--color-muted` (and explicitly NOT `--color-accent`)
+    - No `darkMode: 'class'` configuration anywhere
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 4: Write src/layouts/Base.astro with HTML shell, font loading, data-theme plumbing</name>
+  <files>src/layouts/Base.astro</files>
+  <read_first>
+    - `src/layouts/Base.astro` (may not exist yet — check first with `ls src/layouts/`)
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-23 (component layout spec)
+    - `astro.config.mjs` (just edited in task 2 — confirm font cssVariable names match)
+    - https://docs.astro.build/en/guides/fonts/ (confirm `<Font>` import path for installed Astro 6.x)
+  </read_first>
+  <action>
+    Create the directory if needed (`mkdir -p src/layouts`), then write the full file contents below verbatim:
+
+    ```astro
+    ---
+    import { Font } from 'astro:assets';
+    import '../styles/global.css';
+
+    interface Props {
+      title?: string;
+      description?: string;
+    }
+
+    const {
+      title = 'JigSpec',
+      description = 'JigSpec — agentic AI that ships. The company-level studio behind the .pipe.yaml spec and products like buggerd.',
+    } = Astro.props;
+    ---
+
+    <!doctype html>
+    <html lang="en" data-theme="auto">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={description} />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+
+        <!-- Self-hosted via Astro Fonts API (TECH-05: zero external font CDN) -->
+        <Font cssVariable="--font-display" preload />
+        <Font cssVariable="--font-body" preload />
+
+        <!--
+          Plumbing for Phase 4 dark-mode validation (D-10, D-11).
+          Tailwind 4 already drives palette via @media (prefers-color-scheme: dark) in global.css.
+          This script just reflects the user's preference into a data-theme attribute so
+          Mermaid (Phase 4) can read it without a second media query.
+        -->
+        <script is:inline>
+          (function () {
+            try {
+              const mq = window.matchMedia('(prefers-color-scheme: dark)');
+              const apply = () => {
+                document.documentElement.setAttribute(
+                  'data-theme',
+                  mq.matches ? 'dark' : 'light'
+                );
+              };
+              apply();
+              mq.addEventListener('change', apply);
+            } catch (e) {
+              document.documentElement.setAttribute('data-theme', 'light');
+            }
+          })();
+        </script>
+      </head>
+      <body class="bg-[var(--color-bg)] text-[var(--color-fg)] font-[var(--font-body)] antialiased min-h-screen flex flex-col">
+        <slot />
+      </body>
+    </html>
+    ```
+
+    Notes:
+    - `is:inline` on the script tag is REQUIRED per CLAUDE.md (Astro processes/bundles scripts by default; `is:inline` keeps it as-is in `<head>` so it runs before paint and avoids FOUC on theme).
+    - `<html data-theme="auto">` initial value is overridden by the inline script before paint.
+    - `min-h-screen flex flex-col` on `<body>` lets a future Footer stick to the bottom on short pages without extra wiring.
+    - Do NOT add `<link rel="stylesheet" href="...">` for fonts — the `<Font>` component handles preload + CSS injection.
+    - Do NOT add Google Fonts CDN links anywhere (TECH-05).
+  </action>
+  <verify>
+    <automated>test -f src/layouts/Base.astro && grep -q 'data-theme' src/layouts/Base.astro && grep -q '<slot' src/layouts/Base.astro && grep -q 'cssVariable="--font-display"' src/layouts/Base.astro && grep -q 'cssVariable="--font-body"' src/layouts/Base.astro && grep -q 'is:inline' src/layouts/Base.astro && grep -q "import '../styles/global.css'" src/layouts/Base.astro && ! grep -q "fonts.googleapis.com\|fonts.gstatic.com" src/layouts/Base.astro</automated>
+  </verify>
+  <done>
+    - `src/layouts/Base.astro` exists
+    - Contains `<html lang="en" data-theme=` (initial attribute present)
+    - Contains `<slot />`
+    - Contains exactly two `<Font cssVariable="..."` invocations (display + body)
+    - Contains an `is:inline` script that reads `prefers-color-scheme` and sets `data-theme`
+    - Imports `'../styles/global.css'`
+    - Contains NO references to `fonts.googleapis.com` or `fonts.gstatic.com`
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 5: Write src/components/global/Nav.astro with wordmark + 3 anchor links + mobile hamburger</name>
+  <files>src/components/global/Nav.astro</files>
+  <read_first>
+    - `src/components/global/Nav.astro` (likely doesn't exist; check with `ls src/components/global/`)
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-23, D-25 (mobile breakpoint spec)
+    - The chosen sketch HTML for any specific nav treatment cues
+  </read_first>
+  <action>
+    Create the directory if needed (`mkdir -p src/components/global`), then write the full file contents below verbatim:
+
+    ```astro
+    ---
+    // Phase 1 nav: text wordmark + 3 placeholder anchor links + mobile hamburger.
+    // Anchors point at non-existent sections; Phase 2 will populate the targets.
+    // Per D-23, NO logo SVG in v1 — text wordmark only.
+    // Per D-25, mobile collapse below md (768px), Tailwind defaults only.
+    const links = [
+      { href: '#products', label: 'Products' },
+      { href: '#docs', label: 'Docs' },
+      { href: '#about', label: 'About' },
+    ];
+    ---
+
+    <header class="border-b border-[var(--color-muted)]/20">
+      <nav class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between" aria-label="Primary">
+        <!-- Wordmark -->
+        <a href="/" class="font-[var(--font-display)] text-2xl tracking-tight text-[var(--color-fg)]">
+          JigSpec
+        </a>
+
+        <!-- Desktop links (visible md and up) -->
+        <ul class="hidden md:flex items-center gap-8">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-[var(--color-fg)] hover:text-[var(--color-accent)] transition-colors"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <!-- Mobile hamburger (visible below md) -->
+        <button
+          id="nav-toggle"
+          type="button"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded text-[var(--color-fg)] hover:bg-[var(--color-muted)]/10"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+          aria-controls="nav-mobile-menu"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile menu (hidden by default; toggled below md only) -->
+      <ul
+        id="nav-mobile-menu"
+        class="md:hidden hidden flex-col gap-2 px-6 pb-5 border-t border-[var(--color-muted)]/20"
+      >
+        {links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="block py-2 text-base text-[var(--color-fg)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </header>
+
+    <script>
+      const toggle = document.getElementById('nav-toggle');
+      const menu = document.getElementById('nav-mobile-menu');
+      if (toggle && menu) {
+        toggle.addEventListener('click', () => {
+          const open = menu.classList.contains('hidden') === false;
+          if (open) {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      }
+    </script>
+    ```
+
+    Notes:
+    - Astro processes the `<script>` block by default — that's fine here (it's logic, not theme-bootstrap).
+    - The mobile menu uses `hidden` (display:none) ↔ `flex` (display:flex) toggle. The `flex-col gap-2` is permanent; only display visibility flips.
+    - `aria-expanded` is updated on toggle for accessibility.
+    - The 3 anchor links are placeholders per D-23 — Phase 2 wires actual sections.
+    - Do NOT add a logo SVG or image (D-23: text-only wordmark in v1).
+    - Do NOT animate the menu open/close — animations are deferred (Phase 4 polish, see CONTEXT.md `<deferred>`).
+  </action>
+  <verify>
+    <automated>test -f src/components/global/Nav.astro && grep -q 'JigSpec' src/components/global/Nav.astro && grep -q 'md:hidden' src/components/global/Nav.astro && grep -q 'md:flex' src/components/global/Nav.astro && grep -q 'aria-expanded' src/components/global/Nav.astro && grep -q "addEventListener('click'" src/components/global/Nav.astro && grep -q 'nav-toggle' src/components/global/Nav.astro && grep -c '#products\|#docs\|#about' src/components/global/Nav.astro | awk '{ if ($1 < 2) exit 1 }'</automated>
+  </verify>
+  <done>
+    - `src/components/global/Nav.astro` exists
+    - Contains the wordmark text `JigSpec`
+    - Contains both `md:hidden` (mobile-only elements) and `md:flex` (desktop-only ul) classes
+    - Contains an `id="nav-toggle"` button with `aria-expanded` and `aria-controls`
+    - Contains an `id="nav-mobile-menu"` ul
+    - Contains a `<script>` block with `addEventListener('click', ...)` toggling menu visibility
+    - Contains all 3 anchor links: `#products`, `#docs`, `#about` (each appears at least twice — once in desktop list, once in mobile list)
+    - Contains NO SVG logo file references and NO `<img>` tags for the wordmark
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 6: Write src/components/global/Footer.astro with docs/contact/copyright/GitHub</name>
+  <files>src/components/global/Footer.astro</files>
+  <read_first>
+    - `src/components/global/Footer.astro` (likely doesn't exist; check with `ls src/components/global/`)
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-23 (footer content spec)
+  </read_first>
+  <action>
+    Write the full file contents below verbatim:
+
+    ```astro
+    ---
+    // Phase 1 footer: docs link, contact email, copyright, GitHub org link.
+    // Per D-23, all four required. The honesty constraint applies — no fake "trusted by".
+    const year = new Date().getFullYear();
+    ---
+
+    <footer class="mt-auto border-t border-[var(--color-muted)]/20">
+      <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-[var(--color-muted)]">
+        <p>&copy; {year} JigSpec</p>
+        <ul class="flex flex-wrap items-center gap-6">
+          <li>
+            <a
+              href="https://jigspec.com"
+              class="hover:text-[var(--color-accent)] transition-colors"
+            >
+              Docs
+            </a>
+          </li>
+          <li>
+            <a
+              href="mailto:hi@jigspec.com"
+              class="hover:text-[var(--color-accent)] transition-colors"
+            >
+              hi@jigspec.com
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/JigSpec"
+              rel="noopener"
+              class="hover:text-[var(--color-accent)] transition-colors"
+            >
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+    ```
+
+    Notes:
+    - The `mt-auto` on `<footer>` combined with `min-h-screen flex flex-col` on `<body>` (Base.astro) makes the footer stick to the bottom on short pages.
+    - `&copy; {year}` uses `new Date().getFullYear()` so the year auto-updates — at build time since output is `static`. It will read 2026 in this build.
+    - `mailto:` link is correct per D-23 ("contact email placeholder"); the address `hi@jigspec.com` is consistent with the JigSpec org's apex domain.
+    - Docs link points to `https://jigspec.com` (current VitePress docs apex per D-19 / PROJECT.md "interim location until cutover phase"); will move to `docs.jigspec.com` in the cutover phase, but Phase 1 leaves it pointing at the existing docs.
+    - `rel="noopener"` on the GitHub external link only (the docs link is same-future-domain, mailto needs no rel).
+  </action>
+  <verify>
+    <automated>test -f src/components/global/Footer.astro && grep -q 'github.com/JigSpec' src/components/global/Footer.astro && grep -q 'hi@jigspec.com' src/components/global/Footer.astro && grep -q 'getFullYear()' src/components/global/Footer.astro && grep -q 'href="https://jigspec.com"' src/components/global/Footer.astro</automated>
+  </verify>
+  <done>
+    - `src/components/global/Footer.astro` exists
+    - Contains `https://github.com/JigSpec` (GitHub org link)
+    - Contains `mailto:hi@jigspec.com` (contact email)
+    - Contains `https://jigspec.com` (docs link — interim per D-23)
+    - Contains `getFullYear()` (so copyright year auto-updates)
+    - Renders all four required elements: docs link, contact email, copyright, GitHub link
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 7: Overwrite src/pages/index.astro with composition-only shell</name>
+  <files>src/pages/index.astro</files>
+  <read_first>
+    - `src/pages/index.astro` (current contents — likely Astro scaffold default from plan 01-01)
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-24 (composition-only spec)
+  </read_first>
+  <action>
+    Replace the entire contents of `src/pages/index.astro` with this exact file:
+
+    ```astro
+    ---
+    import Base from '../layouts/Base.astro';
+    import Nav from '../components/global/Nav.astro';
+    import Footer from '../components/global/Footer.astro';
+    ---
+
+    <Base
+      title="JigSpec — coming soon"
+      description="JigSpec is the company behind agentic AI products that ship. Site under construction."
+    >
+      <Nav />
+      <main class="flex-1 px-6 py-32 max-w-3xl mx-auto">
+        <h1 class="font-[var(--font-display)] text-5xl md:text-6xl tracking-tight text-[var(--color-fg)]">
+          JigSpec — coming soon
+        </h1>
+        <p class="mt-6 text-lg text-[var(--color-muted)]">
+          The company-level marketing site is under construction. Real content lands in Phase 2.
+        </p>
+      </main>
+      <Footer />
+    </Base>
+    ```
+
+    Per D-24, this page is composition-only:
+    - Base wraps Nav + main + Footer
+    - The single `<h1>` is the placeholder
+    - One supporting `<p>` is allowed (PROJECT.md tone — no breathless claims; this is a transparent under-construction note)
+    - NO hero, NO product cards, NO sections, NO diagram placeholder, NO form
+
+    The `flex-1` on `<main>` works with `min-h-screen flex flex-col` on `<body>` to push the footer to the bottom on short viewports.
+
+    Do NOT import Mermaid, PostHog, or any Phase 3/4 dependency here.
+    Do NOT add a hero section even if it would look more "complete" — D-24 explicitly forbids it.
+  </action>
+  <verify>
+    <automated>test -f src/pages/index.astro && grep -q 'import Base from' src/pages/index.astro && grep -q '<Base' src/pages/index.astro && grep -q '<Nav' src/pages/index.astro && grep -q '<Footer' src/pages/index.astro && grep -q '<h1' src/pages/index.astro && grep -q 'coming soon' src/pages/index.astro && ! grep -q 'product-card\|<section.*products\|posthog\|mermaid' src/pages/index.astro</automated>
+  </verify>
+  <done>
+    - `src/pages/index.astro` exists and was overwritten (not appended to)
+    - Contains imports for `Base`, `Nav`, `Footer` from their respective paths
+    - Contains `<Base>` wrapper, `<Nav />`, `<h1>` with text "coming soon", and `<Footer />`
+    - Contains NO `<section>` for products, NO `<form>`, NO Mermaid integration, NO PostHog calls
+    - File is composition-only per D-24
+  </done>
+</task>
+
+<task type="auto" tdd="false">
+  <name>Task 8: Distinct-from-buggerd guard + build/check sweep</name>
+  <files>(verification only — no file modifications)</files>
+  <read_first>
+    - All files modified in tasks 2-7
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` (VISUAL-03 cross-reference)
+    - `/Users/kjs/Documents/Business/Buggerd/index.html` (the comparator we must read distinct from)
+  </read_first>
+  <action>
+    Run the four guard checks in sequence. Each is a hard gate; if any fails, STOP and surface to the user before continuing to task 9 (the human verification checkpoint).
+
+    1. **Distinct-from-buggerd typeface guard (VISUAL-03):**
+       ```
+       grep -ril "ui-monospace" src/ astro.config.mjs
+       ```
+       Expected: only `src/styles/global.css` (the `--font-micro` declaration is allowed — it's the fallback for code/monospace use, not the body or display face). If any *other* file matches, the guard fails. The display and body faces are NOT monospace by construction (Inter Tight / Crimson Pro / Inter), so this check is effectively asserting we didn't accidentally `font-mono` the body.
+
+       ```
+       ! grep -rn "font-mono" src/
+       ```
+       Expected: zero matches. (We don't use Tailwind's `font-mono` utility on the body or display — `--font-micro` only exists for inline code if/when added.)
+
+    2. **Distinct-from-buggerd accent guard (VISUAL-03):**
+       ```
+       ! grep -rn "emerald-600\|emerald-500\|#10B981\|#059669" src/ astro.config.mjs
+       ```
+       Expected: zero matches. Emerald is buggerd's accent. This site uses warm amber (direction A) or cool indigo (direction B).
+
+    3. **Type check + build:**
+       ```
+       npx astro check
+       ```
+       Expected: exit code 0, no errors.
+
+       ```
+       npm run build
+       ```
+       Expected: exit code 0, `dist/` directory created with `index.html` inside.
+
+    4. **CSS @theme sanity:**
+       ```
+       grep -E "^\s*--color-" src/styles/global.css | grep -v "^\s*/\*" | wc -l
+       ```
+       Expected: at most 7 (4 light + 3 dark overrides). More than 7 indicates the palette has crept past the ≤4-color budget.
+
+    If any guard fails, fix the offending file and rerun. Do NOT proceed to task 9 until all four guards pass.
+  </action>
+  <verify>
+    <automated>npx astro check && npm run build && test -f dist/index.html && ! grep -rn "emerald-600\|emerald-500\|#10B981\|#059669" src/ astro.config.mjs && ! grep -rn "font-mono" src/ && [ "$(grep -E "^\s*--color-" src/styles/global.css | grep -v "^\s*/\*" | wc -l | tr -d ' ')" -le 7 ]</automated>
+  </verify>
+  <done>
+    - `npx astro check` exits 0
+    - `npm run build` exits 0
+    - `dist/index.html` exists (proves the static build pipeline produces output)
+    - No `emerald-600`, `emerald-500`, `#10B981`, or `#059669` in `src/` or `astro.config.mjs`
+    - No `font-mono` Tailwind class in `src/`
+    - At most 7 `--color-*` declarations across the entire `global.css` (light scope + dark overrides)
+  </done>
+</task>
+
+<task type="checkpoint:human-verify" gate="blocking">
+  <name>Task 9: Manual responsive verification at 320 / 375 / 414 / 1280</name>
+  <files>
+    .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-320.png
+    .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-375.png
+    .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-414.png
+    .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-1280.png
+  </files>
+  <read_first>
+    - `.planning/phases/01-scaffold-sketches-visual-shell/01-CONTEXT.md` D-25 (manual verification at 320/375/414/desktop, no test framework)
+    - `.planning/REQUIREMENTS.md` VISUAL-04 (responsive legibility requirement)
+  </read_first>
+  <what-built>
+    Production Astro shell with:
+    - Self-hosted typography (chosen direction's display + body faces) via Astro Fonts API
+    - Tailwind 4 `@theme` palette (≤4 colors) and 3-element type scale
+    - `Base.astro` document shell with `data-theme` plumbing
+    - `Nav.astro` with text wordmark + 3 anchor links + mobile hamburger (collapses below 768px)
+    - `Footer.astro` with docs/contact/copyright/GitHub
+    - `index.astro` rendering only `<h1>JigSpec — coming soon</h1>` + supporting `<p>` inside the shell
+  </what-built>
+  <how-to-verify>
+    Before this checkpoint, the executor must:
+
+    1. Start dev server in the background:
+       ```
+       npm run dev
+       ```
+       Wait for "Local: http://localhost:4321" (or whatever port Astro picks).
+
+    2. Create the screenshots directory:
+       ```
+       mkdir -p .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots
+       ```
+
+    3. Capture screenshots at each viewport using Chrome DevTools MCP (preferred) or Playwright if available. Save to:
+       - `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-320.png` (iPhone SE-class)
+       - `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-375.png` (iPhone standard)
+       - `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-414.png` (iPhone Plus / Android large)
+       - `.planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-1280.png` (laptop)
+
+       For each: full-page screenshot with the dev URL loaded, viewport set to the listed width × 800 height (height isn't critical; full-page capture handles it).
+
+    4. Stop the dev server when done.
+
+    Then ask the user to verify (using the captured screenshots inline in chat):
+
+    **At 320, 375, 414 (mobile):**
+    - The hamburger button is visible in the top-right of the nav
+    - The 3 desktop links (`Products`, `Docs`, `About`) are NOT visible inline
+    - The `JigSpec` wordmark is visible top-left
+    - The `<h1>` "JigSpec — coming soon" is legible, doesn't overflow horizontally, doesn't wrap awkwardly mid-word
+    - The footer is visible at the bottom (or after scroll), and its three items (`Docs`, `hi@jigspec.com`, `GitHub`) stack/wrap reasonably
+    - Tap the hamburger → mobile menu opens vertically with the 3 links
+
+    **At 1280 (desktop):**
+    - The 3 nav links (`Products`, `Docs`, `About`) are visible inline in the top-right
+    - The hamburger button is NOT visible
+    - The `<h1>` is large and dominant (text-5xl or text-6xl)
+    - The page has comfortable horizontal padding (page does not feel edge-to-edge)
+    - The footer is at the bottom, its three items in a single row
+
+    **Visual identity sanity (all viewports):**
+    - The chosen direction's typography is visible (if direction A: geometric grotesque headline; if direction B: serif headline)
+    - The chosen direction's accent color is visible on link hover (warm amber for A, cool indigo for B)
+    - The aesthetic does NOT read as a buggerd derivative (no monospace headline, no emerald accent, no zinc/dark dense layout)
+  </how-to-verify>
+  <verify>
+    <automated>test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-320.png && test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-375.png && test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-414.png && test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-1280.png</automated>
+  </verify>
+  <resume-signal>Type "approved" once all five visual checks pass at all four viewports. If any check fails, describe the failure (e.g., "h1 wraps mid-word at 320", "hamburger missing at 414", "accent looks emerald-adjacent") and the executor will revise.</resume-signal>
+  <done>
+    - All four screenshot PNGs exist in `verification-screenshots/`
+    - User confirmed nav collapses to hamburger below 768px
+    - User confirmed nav shows inline links at 1280
+    - User confirmed h1 is legible at 320 (no overflow, no awkward wrap)
+    - User confirmed footer renders all three items at all viewports
+    - User confirmed visual identity does NOT read as buggerd-derivative
+    - User typed "approved"
+  </done>
+</task>
+
+</tasks>
+
+<threat_model>
+## Trust Boundaries
+
+| Boundary | Description |
+|----------|-------------|
+| user browser → static site | Untrusted client renders our HTML/CSS/JS. No backend in v1. |
+| user browser → Google Fonts (build-time only) | Build pipeline fetches font files from Google Fonts at build time via Astro Fonts API; runtime serves them same-origin. |
+| browser DOM → inline theme script | The `is:inline` script in Base.astro reads `prefers-color-scheme` and writes `data-theme`. No user input crosses this boundary. |
+| browser DOM → Nav toggle script | The Nav.astro toggle script reads click events and toggles class names. No user input flows to executable contexts. |
+
+## STRIDE Threat Register
+
+| Threat ID | Category | Component | Disposition | Mitigation Plan |
+|-----------|----------|-----------|-------------|-----------------|
+| T-01-03-01 | Tampering | Astro Fonts API build-time fetch | accept | Build-time only; output is hashed and committed in `dist/`. Vercel deploy is from same git commit; SRI not applicable for same-origin self-hosted assets. |
+| T-01-03-02 | Information Disclosure | inline theme script | accept | Reads `prefers-color-scheme` only. No PII; no cross-origin. |
+| T-01-03-03 | Tampering | Nav toggle script class manipulation | accept | Operates only on element IDs scoped to the component; no innerHTML writes; no eval; no user-supplied content reaches the DOM in v1 (no forms in this plan). |
+| T-01-03-04 | Spoofing | Footer external links (`https://github.com/JigSpec`) | mitigate | `rel="noopener"` on external link to GitHub prevents `window.opener` access. mailto + same-future-domain links don't need rel. |
+| T-01-03-05 | Elevation of Privilege | Tailwind `@theme` arbitrary values via `[var(--...)]` | accept | Tailwind 4 evaluates `[var(--color-bg)]` at build time; the variable name space is locked by `global.css` (which is committed). No user-controlled CSS. |
+| T-01-03-06 | Denial of Service | Font preload size | accept | `<Font preload>` for 2 faces × 1-2 weights = ~50-100KB total, well under typical perf budget. Font subsetting (`subsets: ['latin']`) limits payload. |
+| T-01-03-07 | Information Disclosure | `<html data-theme>` attribute | accept | Reflects only OS-level color preference, which is already client-side state. Phase 4 dark-mode validation will confirm Mermaid reads it without leaking other state. |
+| T-01-03-08 | Tampering | Future Phase 4 dark-mode injection point | mitigate | The inline theme script is `is:inline` so it's not bundled — easier to audit. Phase 4 should NOT replace it with a bundled equivalent without re-reviewing this register. |
+
+CSP enforcement happens in `vercel.json` (plan 01-04). The Phase 1 vercel.json already allowlists self for fonts/scripts/styles, which covers the surface of this plan.
+</threat_model>
+
+<verification>
+After all tasks complete, run the full sweep:
+
+```bash
+npx astro check                                                  # exit 0
+npm run build                                                    # exit 0
+test -d dist && test -f dist/index.html                          # static output
+grep -q "Visual direction: Sketch" .planning/PROJECT.md          # decision recorded
+grep -q "@theme" src/styles/global.css                           # tokens present
+grep -q "is:inline" src/layouts/Base.astro                       # theme bootstrap
+grep -q "md:hidden" src/components/global/Nav.astro              # mobile collapse
+grep -q "github.com/JigSpec" src/components/global/Footer.astro  # GitHub link
+! grep -rn "emerald-600\|font-mono" src/                         # distinct from buggerd
+test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-320.png
+test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-375.png
+test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-414.png
+test -f .planning/phases/01-scaffold-sketches-visual-shell/verification-screenshots/dev-1280.png
+```
+
+All commands must exit 0. Visual checks require the user-approved screenshot review in task 9.
+</verification>
+
+<success_criteria>
+- [ ] PROJECT.md Key Decisions table contains exactly one new row recording the chosen sketch direction (A or B) with `Locked Phase 1` outcome
+- [ ] `astro.config.mjs` declares `experimental.fonts` with the chosen direction's display + body faces; no Google Fonts CDN link anywhere in the codebase
+- [ ] `src/styles/global.css` declares ≤4 colors and 3 fonts in `@theme`, with `prefers-color-scheme: dark` overriding bg/fg/muted (NOT accent)
+- [ ] `Base.astro` plumbs `<html data-theme>` via inline `is:inline` script and renders `<slot />` inside `<body>` flex column
+- [ ] `Nav.astro` shows wordmark + inline links at md+, hamburger + collapsible vertical menu below md, with working JS toggle and `aria-expanded`
+- [ ] `Footer.astro` renders docs link + `hi@jigspec.com` + copyright (auto year) + `https://github.com/JigSpec`
+- [ ] `index.astro` is composition-only: `<Base>` + `<Nav />` + `<h1>JigSpec — coming soon</h1>` + supporting `<p>` + `<Footer />`. No products, no forms, no Mermaid.
+- [ ] `npx astro check` exits 0 and `npm run build` produces `dist/index.html`
+- [ ] No `emerald-600`/`emerald-500`/`#10B981`/`#059669` and no `font-mono` Tailwind class in `src/` (distinct from buggerd guard)
+- [ ] Four PNG screenshots captured at 320/375/414/1280 in `verification-screenshots/`
+- [ ] User approved the responsive shell renders legibly at all four viewports and reads as visually distinct from buggerd
+</success_criteria>
+
+<output>
+After completion, create `.planning/phases/01-scaffold-sketches-visual-shell/01-03-visual-identity-shell-SUMMARY.md` recording:
+- Chosen direction (A or B) and the Key Decision row text appended to PROJECT.md
+- Final palette hex values committed in `global.css`
+- Final display + body font names committed in `astro.config.mjs`
+- Path to the four verification screenshots
+- Any deviations from the plan (none expected — all branches are explicit)
+- Forward note for plan 01-04: vercel.json CSP for `connect-src` and `script-src` is unaffected by this plan (no PostHog/Mermaid yet); the only CSP-relevant addition would be `font-src 'self'` which Astro Fonts API output already requires.
+</output>
