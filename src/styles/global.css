@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  /* Palette — ≤4 colors per VISUAL-02 (D-09) */
+  /* Palette — ≤4 colors per VISUAL-02 (D-09).
+     @theme is compile-time only — Tailwind 4 statically extracts these into :root.
+     Dark-mode overrides happen below via plain @media + :root, NOT a nested @theme
+     (Tailwind 4 collapses nested @theme blocks and the last set of values wins,
+     which would force dark mode in all modes). */
   --color-bg: #FAFAF8;
   --color-fg: #18181B;
   --color-muted: #71717A;
@@ -13,10 +17,11 @@
   --font-micro: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Dark mode via prefers-color-scheme (D-10: media strategy, no toggle UI) */
-/* Dark palette is auto-derived per D-11 — validated visually only in Phase 4 */
+/* Dark mode via prefers-color-scheme (D-10: media strategy, no toggle UI).
+   Dark palette is auto-derived per D-11 — validated visually only in Phase 4.
+   Override the @theme-generated CSS variables on :root at runtime. */
 @media (prefers-color-scheme: dark) {
-  @theme {
+  :root {
     --color-bg: #0A0A0A;
     --color-fg: #FAFAFA;
     --color-muted: #A1A1AA;
