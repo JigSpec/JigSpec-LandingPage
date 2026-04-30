@@ -61,9 +61,9 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 
 ### Deploy (preview, repo, cutover)
 
-- [ ] **DEPLOY-01**: GitHub repo created under the JigSpec org parallel to JigSpec/buggerd (working name: `JigSpec/jigspec-landing` or similar); main branch protected at minimum from force-push
-- [ ] **DEPLOY-02**: Vercel project connected; auto-deploy from `main`; preview deploys on every PR; production preview URL `jigspec.vercel.app` (or similar) serves the site for ≥24h before any consideration of cutover
-- [ ] **DEPLOY-03**: `vercel.json` mirrors buggerd's pattern (security headers — HSTS, X-Frame-Options DENY, CSP including PostHog hosts `https://us-assets.i.posthog.com` script and both PostHog hosts in `connect-src`, Permissions-Policy); `cleanUrls: true`; `trailingSlash: false`; `.planning/` and `.git/` excluded from deploy artifact via `.vercelignore`
+- [x] **DEPLOY-01**: GitHub repo created under the JigSpec org parallel to JigSpec/buggerd (working name: `JigSpec/jigspec-landing` or similar); main branch protected at minimum from force-push
+- [x] **DEPLOY-02**: Vercel project connected; auto-deploy from `main`; preview deploys on every PR; production preview URL `jigspec.vercel.app` (or similar) serves the site for ≥24h before any consideration of cutover
+- [x] **DEPLOY-03**: `vercel.json` mirrors buggerd's pattern (security headers — HSTS, X-Frame-Options DENY, CSP including PostHog hosts `https://us-assets.i.posthog.com` script and both PostHog hosts in `connect-src`, Permissions-Policy); `cleanUrls: true`; `trailingSlash: false`; `.planning/` and `.git/` excluded from deploy artifact via `.vercelignore`
 - [ ] **DEPLOY-04**: Apex DNS cutover from current VitePress site to this site (final, gated phase) — gate criteria ALL required: (a) `docs.jigspec.com` live and serving the existing VitePress content, (b) Cloudflare Bulk Redirects or Page Rules redirect map deployed for legacy docs paths, (c) header banner deployed informing visitors of the apex change with a link to docs.jigspec.com (visible for ≥4 weeks post-cutover), (d) ≥3 known docs users have validated the preview deploy, (e) 404 monitoring alert configured on Vercel/PostHog
 
 ## v2 Requirements
@@ -143,9 +143,9 @@ Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 | TECH-03 | Phase 2 | Pending |
 | TECH-04 | Phase 2 | Pending |
 | TECH-05 | Phase 1 | Complete |
-| DEPLOY-01 | Phase 1 | Pending |
-| DEPLOY-02 | Phase 1 | Pending |
-| DEPLOY-03 | Phase 1 | Pending |
+| DEPLOY-01 | Phase 1 | Complete |
+| DEPLOY-02 | Phase 1 | Complete |
+| DEPLOY-03 | Phase 1 | Complete |
 | DEPLOY-04 | Phase 5 | Pending |
 
 **Coverage:**
