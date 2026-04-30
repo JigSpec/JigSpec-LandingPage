@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 Phase: 01 (scaffold-sketches-visual-shell) — EXECUTING
 Plan: 4 of 4
 Status: Ready to execute
-Last activity: 2026-04-30
+Last activity: 2026-04-30 — Phase 1 deploy verified at https://jigspec-landing.vercel.app (vercel.json + .vercelignore committed, GH repo public on JigSpec/JigSpec-LandingPage with main force-push protection, Vercel auto-deploy from main confirmed). Closes DEPLOY-01/02/03.
 
 Progress: [████████░░] 75%
 

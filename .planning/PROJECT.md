@@ -89,6 +89,7 @@ The company-level marketing site for JigSpec — the proprietary agentic-AI runt
 | Designer of record: Claude (this session); no human-designer hours budgeted | User explicitly accepts the trade-off; mitigations are early sketch comparison + external cold-read at launch gate, not external designer pass | — Pending |
 | Add 6th card "Agentic Employees" (Marblism-style: hire named AI for functional ops roles) | Expands the demand-probe surface to include the SMB/founder hire-an-AI-employee model; intentionally creates a Delegate-overlap that the demand signal can resolve | — Pending |
 | Visual direction: Sketch B — Engineering-Blog Pragmatic (Crimson Pro 600 display + Inter 400 body, cool indigo accent #6366F1 on near-white #FAFAF8) | Picked from two-sketch comparison in Phase 1; editorial serif posture matches Stratechery anchor (D-06) and voice candidate (2); accepted Phase 2 risk that serif body copy quality bar is higher | — Locked Phase 1 |
+| Phase 1 deploy: live preview URL https://jigspec-landing.vercel.app (Vercel team `jig-spec`, project `jigspec-landing`, GitHub repo `JigSpec/JigSpec-LandingPage` public with main protected from force-push) | Deployed and verified 2026-04-30; HSTS + full CSP including PostHog hosts (script-src + connect-src) confirmed via curl; `/.planning/(.*)` returns 404 via the vercel.json redirect; auto-deploy from `main` confirmed by triggering a second deploy on the screenshot push | — Locked Phase 1, closes DEPLOY-01/02/03 |
 
 ## Evolution
 
