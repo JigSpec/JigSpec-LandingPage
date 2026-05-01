@@ -1,21 +1,28 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Nav from '../components/global/Nav.astro';
 import Footer from '../components/global/Footer.astro';
+import Hero from '../components/sections/Hero.astro';
+import AgenticAIExplainer from '../components/sections/AgenticAIExplainer.astro';
+import ProductGrid from '../components/sections/ProductGrid.astro';
+import ProblemPitchSection from '../components/sections/ProblemPitchSection.astro';
+
+const products = (await getCollection('products')).sort(
+  (a, b) => a.data.order - b.data.order
+);
 ---
 
 <Base
-  title="JigSpec — coming soon"
-  description="JigSpec is the company behind agentic AI products that ship. Site under construction."
+  title="JigSpec — agentic AI that ships"
+  description="JigSpec is the company-level studio behind agentic AI products that ship with reliability and autonomy."
 >
   <Nav />
-  <main class="flex-1 px-6 py-32 max-w-3xl mx-auto">
-    <h1 class="font-display text-5xl md:text-6xl tracking-tight text-fg">
-      JigSpec — coming soon
-    </h1>
-    <p class="mt-6 text-lg text-muted">
-      The company-level marketing site is under construction. Real content lands in Phase 2.
-    </p>
+  <main class="flex-1">
+    <Hero />
+    <AgenticAIExplainer />
+    <ProductGrid products={products} />
+    <ProblemPitchSection />
   </main>
   <Footer />
 </Base>

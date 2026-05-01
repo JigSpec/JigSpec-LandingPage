@@ -1,7 +1,6 @@
 ---
 // Phase 2: form-shaped placeholder — disabled inputs, no action attribute, disabled submit.
-// Phase 3 will: remove `disabled` from inputs/button, add submit handler that calls
-// posthog.identify() then posthog.capture('form:submit', {productId, ...}).
+// Phase 3 removes `disabled` and wires the analytics-SDK capture in the submit handler.
 // Pattern 7 + Pitfall 8 — disabled inputs prevent Enter-key submit (the disabled button alone
 // would NOT prevent Enter-in-text-input from firing form submission).
 interface Props {
@@ -20,7 +19,7 @@ const { productId } = Astro.props;
     [Tell us you'd use this]
   </p>
   <p class="mt-2 text-sm text-muted">
-    [Placeholder copy — replace in Phase 3 when PostHog Surveys wires up.]
+    [Placeholder copy — replace in Phase 3 when the survey wiring lands.]
   </p>
 
   <div class="mt-6">

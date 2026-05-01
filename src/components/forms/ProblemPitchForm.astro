@@ -1,6 +1,6 @@
 ---
 // Phase 2: form-shaped placeholder for the open-ended "tell us a problem" capture.
-// Phase 3 will swap to bare posthog.capture('problem_pitch', {email, problem}).
+// Phase 3 will swap to a bare event-capture call (the analytics SDK wiring lands then).
 // No productId — the open form is general.
 ---
 
@@ -13,7 +13,7 @@
     [Pitch us a problem]
   </p>
   <p class="mt-2 text-sm text-muted">
-    [Placeholder copy — replace in Phase 3 when posthog.capture wiring lands. Frame as: tell us about a repetitive or research-heavy task you think could be done by an autonomous agent. Email is optional but helps us follow up.]
+    [Placeholder copy — replace in Phase 3 when the capture wiring lands. Frame as: tell us about a repetitive or research-heavy task you think could be done by an autonomous agent. Email is optional but helps us follow up.]
   </p>
 
   <div class="mt-6">
