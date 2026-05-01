@@ -1,0 +1,62 @@
+---
+// Phase 2: form-shaped placeholder — disabled inputs, no action attribute, disabled submit.
+// Phase 3 will: remove `disabled` from inputs/button, add submit handler that calls
+// posthog.identify() then posthog.capture('form:submit', {productId, ...}).
+// Pattern 7 + Pitfall 8 — disabled inputs prevent Enter-key submit (the disabled button alone
+// would NOT prevent Enter-in-text-input from firing form submission).
+interface Props {
+  productId: string;
+}
+const { productId } = Astro.props;
+---
+
+<form
+  class="mt-12 max-w-xl border border-muted/20 rounded-md p-6"
+  data-form="interest"
+  data-product-id={productId}
+  aria-labelledby={`interest-${productId}-legend`}
+>
+  <p id={`interest-${productId}-legend`} class="font-display text-xl tracking-tight text-fg">
+    [Tell us you'd use this]
+  </p>
+  <p class="mt-2 text-sm text-muted">
+    [Placeholder copy — replace in Phase 3 when PostHog Surveys wires up.]
+  </p>
+
+  <div class="mt-6">
+    <label for={`interest-${productId}-email`} class="block text-sm font-medium text-fg">
+      Email
+    </label>
+    <input
+      id={`interest-${productId}-email`}
+      type="email"
+      name="email"
+      required
+      disabled
+      class="mt-1 w-full px-3 py-2 border border-muted/30 rounded text-fg disabled:bg-muted/5 disabled:cursor-not-allowed"
+      placeholder="you@example.com"
+    />
+  </div>
+
+  <div class="mt-4">
+    <label for={`interest-${productId}-context`} class="block text-sm font-medium text-fg">
+      What would you use this for? (one or two sentences)
+    </label>
+    <textarea
+      id={`interest-${productId}-context`}
+      name="context"
+      rows="3"
+      required
+      disabled
+      class="mt-1 w-full px-3 py-2 border border-muted/30 rounded text-fg disabled:bg-muted/5 disabled:cursor-not-allowed"
+    ></textarea>
+  </div>
+
+  <button
+    type="submit"
+    disabled
+    class="mt-6 px-4 py-2 bg-accent text-bg font-medium rounded disabled:bg-muted/30 disabled:cursor-not-allowed"
+  >
+    Wired in Phase 3
+  </button>
+</form>

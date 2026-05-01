@@ -1,0 +1,54 @@
+---
+// Phase 2: form-shaped placeholder for the open-ended "tell us a problem" capture.
+// Phase 3 will swap to bare posthog.capture('problem_pitch', {email, problem}).
+// No productId — the open form is general.
+---
+
+<form
+  class="mt-8 border border-muted/20 rounded-md p-6"
+  data-form="problem-pitch"
+  aria-labelledby="problem-pitch-legend"
+>
+  <p id="problem-pitch-legend" class="font-display text-xl tracking-tight text-fg">
+    [Pitch us a problem]
+  </p>
+  <p class="mt-2 text-sm text-muted">
+    [Placeholder copy — replace in Phase 3 when posthog.capture wiring lands. Frame as: tell us about a repetitive or research-heavy task you think could be done by an autonomous agent. Email is optional but helps us follow up.]
+  </p>
+
+  <div class="mt-6">
+    <label for="problem-pitch-email" class="block text-sm font-medium text-fg">
+      Email (optional)
+    </label>
+    <input
+      id="problem-pitch-email"
+      type="email"
+      name="email"
+      disabled
+      class="mt-1 w-full px-3 py-2 border border-muted/30 rounded text-fg disabled:bg-muted/5 disabled:cursor-not-allowed"
+      placeholder="you@example.com"
+    />
+  </div>
+
+  <div class="mt-4">
+    <label for="problem-pitch-problem" class="block text-sm font-medium text-fg">
+      What problem should we look at?
+    </label>
+    <textarea
+      id="problem-pitch-problem"
+      name="problem"
+      rows="4"
+      required
+      disabled
+      class="mt-1 w-full px-3 py-2 border border-muted/30 rounded text-fg disabled:bg-muted/5 disabled:cursor-not-allowed"
+    ></textarea>
+  </div>
+
+  <button
+    type="submit"
+    disabled
+    class="mt-6 px-4 py-2 bg-accent text-bg font-medium rounded disabled:bg-muted/30 disabled:cursor-not-allowed"
+  >
+    Wired in Phase 3
+  </button>
+</form>
