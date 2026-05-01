@@ -47,7 +47,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 02-01-content-collection-PLAN.md — Astro 6 content collection (src/content.config.ts) + 6 product markdown files with discriminated cta union
 - [x] 02-02-section-and-card-components-PLAN.md — 9 components: 4 sections, 2 cards (block-link), 2 form-shaped placeholders, 1 Mermaid placeholder shell
-- [ ] 02-03-index-composition-PLAN.md — Composition-only src/pages/index.astro rendering Hero → Explainer → Grid → ProblemPitch in narrative order
+- [x] 02-03-index-composition-PLAN.md — Composition-only src/pages/index.astro rendering Hero → Explainer → Grid → ProblemPitch in narrative order
 - [ ] 02-04-product-detail-route-PLAN.md — Single dynamic route src/pages/products/[slug].astro generating 5 detail pages (buggerd excluded by cta-type filter)
 - [ ] 02-05-doc-drift-and-phase-verification-PLAN.md — Patch src/content.config.ts path drift in REQUIREMENTS/ROADMAP, wire npm run honesty-audit, full Phase 2 verification chain + human cold-read checkpoint
 **UI hint**: yes
