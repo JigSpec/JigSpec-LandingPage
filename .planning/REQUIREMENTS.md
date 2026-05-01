@@ -17,7 +17,7 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 - [x] **CONTENT-06**: Visitor sees a "Tell us a problem we should solve" section with copy that frames the form as soliciting demand signal beyond our preconceived cards (not a contact form)
 - [x] **CONTENT-07**: Page footer contains: link to docs (initially the existing VitePress site at jigspec.com or its preview equivalent; flips to `docs.jigspec.com` at cutover), contact email, copyright, and a link to the GitHub org
 - [x] **CONTENT-08**: All copy avoids fabricated social proof (no testimonials, no "trusted by" logos, no fake metrics, no "industry-leading" superlatives) — honesty constraint inherited from buggerd and Delegate landings
-- [ ] **CONTENT-09**: Each of the 5 concept cards has its own on-site landing page at `/products/[slug]` rendered from the same `src/content/products/{slug}.md` file via a single `pages/products/[slug].astro` template; the page includes the card's headline + a longer-form description (200–400 words) + an embedded interest form (DEMAND-01) + a back-to-home link; the page reuses Nav/Footer for layout consistency. Buggerd has no such page on this site (its landing is buggerd.com)
+- [x] **CONTENT-09**: Each of the 5 concept cards has its own on-site landing page at `/products/[slug]` rendered from the same `src/content/products/{slug}.md` file via a single `pages/products/[slug].astro` template; the page includes the card's headline + a longer-form description (200–400 words) + an embedded interest form (DEMAND-01) + a back-to-home link; the page reuses Nav/Footer for layout consistency. Buggerd has no such page on this site (its landing is buggerd.com)
 
 ### Demand (the signal-capture mechanism — primary job of the page)
 
@@ -117,7 +117,7 @@ Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 | CONTENT-06 | Phase 2 | Complete |
 | CONTENT-07 | Phase 2 | Complete |
 | CONTENT-08 | Phase 2 | Complete |
-| CONTENT-09 | Phase 2 | Pending |
+| CONTENT-09 | Phase 2 | Complete |
 | DEMAND-01 | Phase 3 | Pending |
 | DEMAND-02 | Phase 3 | Pending |
 | DEMAND-03 | Phase 3 | Pending |
