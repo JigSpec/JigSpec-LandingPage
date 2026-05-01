@@ -54,7 +54,7 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 ### Tech (stack scaffold)
 
 - [x] **TECH-01**: Astro 6 project scaffolded with TypeScript strict mode; Tailwind 4 wired via `@tailwindcss/vite` plugin (NOT `@astrojs/tailwind`); `astro-mermaid` v2 + `mdx` + `sitemap` integrations installed; integration order respects `astro-mermaid` first
-- [x] **TECH-02**: `src/content/products/` content collection with one Markdown file per product, validated by a Zod schema with discriminated-union `cta` field (`external` for buggerd, `interest` for the others); `src/content/config.ts` also reserves an empty `blog` collection schema so v2 blog ships without re-platform
+- [x] **TECH-02**: `src/content/products/` content collection with one Markdown file per product, validated by a Zod schema with discriminated-union `cta` field (`external` for buggerd, `interest` for the others); `src/content.config.ts` also reserves an empty `blog` collection schema so v2 blog ships without re-platform
 - [x] **TECH-03**: Component layout: `src/components/sections/` (page-narrative blocks), `src/components/cards/ProductCard.astro`, `src/components/forms/InterestForm.astro` (single primitive parameterized by `productId`), `src/components/diagrams/MermaidDiagram.astro`, `src/components/global/Nav.astro` + `Footer.astro` + `Analytics.astro`
 - [x] **TECH-04**: `pages/index.astro` is composition only — imports section components in narrative order, contains no business logic, no inline data
 - [x] **TECH-05**: Astro Fonts API self-hosts the chosen typefaces (zero external font CDN); CSP in `vercel.json` does not require font-CDN allowlisting

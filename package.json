@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "honesty-audit": "if grep -riE 'trusted by|fortune 500|industry-leading|world-class|best-in-class|cutting-edge|revolutionary|game-changing|unparalleled|enterprise-grade' src/ ; then echo '\\nHonesty audit FAILED — see hits above. See CONTENT-08 + Pitfall 4 in 02-RESEARCH.md.' && exit 1 ; else echo 'Honesty audit PASSED.' ; fi"
   },
   "dependencies": {
     "astro": "^6.1.10"

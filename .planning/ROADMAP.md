@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. The preview URL serves the home page end-to-end with hero (falsifiable contrastive sub-line), 250–400-word "What is agentic AI" educational section (with a contrast element), 6-card product grid with equal visual footprint and `Shipping` / `Probe` / `Sibling` badges, "Tell us a problem we should solve" section with form-shaped placeholder, and footer (docs link, contact email, GitHub org link, copyright).
   2. The 6 product cards (buggerd, scientific-paper-agent, triage-router-bot, recorder-extractor, agentic-employees, delegate) each load from `src/content/products/{slug}.md` validated by a Zod schema with a discriminated `cta` union (`external` for buggerd → buggerd.com, `interest` for the other 5); adding a 7th card would require adding only one Markdown file.
   3. The whole surface of every card is a clickable link (not just an inline button); clicking buggerd opens `https://buggerd.com` in a new tab, clicking any concept card navigates to `/products/[slug]` on this site. Each `/products/[slug]` page is rendered by a single dynamic-route template (`pages/products/[slug].astro`) that pulls headline + 200–400 word longer-form description + a placeholder for the embedded interest form (Phase 3 wires the form) from the same content collection, and reuses Nav/Footer.
-  4. `pages/index.astro` is composition-only — imports section components in narrative order, contains zero business logic and zero inline data; `src/content/config.ts` also reserves an empty `blog` collection schema so v2 ships without re-platform.
+  4. `pages/index.astro` is composition-only — imports section components in narrative order, contains zero business logic and zero inline data; `src/content.config.ts` also reserves an empty `blog` collection schema so v2 ships without re-platform.
   5. A cold-read reviewer (someone who has not seen the page in development) can articulate within 60 seconds what JigSpec does and how it differs from generic agentic-AI noise; if not, hero / explainer / card framing is iterated before Phase 3 begins.
   6. All copy passes the honesty audit — no testimonials, no "trusted by" logos, no fabricated metrics, no "industry-leading" superlatives.
 **Plans:** 5 plans
@@ -49,7 +49,7 @@ Plans:
 - [x] 02-02-section-and-card-components-PLAN.md — 9 components: 4 sections, 2 cards (block-link), 2 form-shaped placeholders, 1 Mermaid placeholder shell
 - [x] 02-03-index-composition-PLAN.md — Composition-only src/pages/index.astro rendering Hero → Explainer → Grid → ProblemPitch in narrative order
 - [x] 02-04-product-detail-route-PLAN.md — Single dynamic route src/pages/products/[slug].astro generating 5 detail pages (buggerd excluded by cta-type filter)
-- [ ] 02-05-doc-drift-and-phase-verification-PLAN.md — Patch src/content.config.ts path drift in REQUIREMENTS/ROADMAP, wire npm run honesty-audit, full Phase 2 verification chain + human cold-read checkpoint
+- [x] 02-05-doc-drift-and-phase-verification-PLAN.md — Patch src/content.config.ts path drift in REQUIREMENTS/ROADMAP, wire npm run honesty-audit, full Phase 2 verification chain + human cold-read checkpoint
 **UI hint**: yes
 
 ### Phase 3: Analytics, Forms & Notifications
