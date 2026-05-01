@@ -1,0 +1,16 @@
+---
+// Phase 2 placeholder — Phase 4 wires astro-mermaid. Accepts a `code` prop for forward-compat.
+interface Props {
+  code?: string;
+  caption?: string;
+}
+const { caption = '[Diagram caption — Phase 4 swaps in real Mermaid render]' } = Astro.props;
+---
+
+<figure class="my-12">
+  <div class="border-2 border-dashed border-muted/30 rounded-md p-12 text-center">
+    <p class="font-display text-2xl text-muted">[Diagram — Phase 4]</p>
+    <p class="mt-2 text-sm text-muted">[astro-mermaid lazy-loads here — see Phase 4 plan]</p>
+  </div>
+  <figcaption class="mt-3 text-sm text-muted text-center italic">{caption}</figcaption>
+</figure>
