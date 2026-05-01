@@ -9,14 +9,14 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 
 ### Content (the page's narrative payload)
 
-- [ ] **CONTENT-01**: Visitor reads a hero with a tagline and one-sentence sub-line that distinguishes JigSpec's reliability + autonomy claim from the breathless agentic-AI noise; the sub-line is *falsifiable* (e.g. "agents that pass your existing CI before they ship a change," not "the future of work")
-- [ ] **CONTENT-02**: Visitor reads a 250–400 word "What is agentic AI" educational section that gives a non-expert a working definition in under 90 seconds, structurally treated (heading + body + a contrast element like a small table or two-column layout) — direct response to the buggerd post-mortem
-- [ ] **CONTENT-03**: Visitor sees a 6-card product grid with **equal visual footprint** for every card, in narrative order: buggerd, scientific paper agent, triage + router bot, always-on recorder + extractor, Agentic Employees, Delegate
-- [ ] **CONTENT-04**: Each product card displays a one-state stage badge (`Shipping` for buggerd, `Probe` for the 4 concept-stage products including Agentic Employees, `Sibling` for Delegate) so visitors can read what's real vs. what's being measured without leaving the grid
-- [ ] **CONTENT-05**: The entire surface of every product card is clickable (not just an inline button) and navigates to that card's landing destination: buggerd → `https://buggerd.com` (external, opens in new tab); the 5 concept cards → an on-site product landing page at `/products/[slug]` (CONTENT-09); analytics fires `card:open` (concepts) or `card:cta_external_click` (buggerd) on click
-- [ ] **CONTENT-06**: Visitor sees a "Tell us a problem we should solve" section with copy that frames the form as soliciting demand signal beyond our preconceived cards (not a contact form)
+- [x] **CONTENT-01**: Visitor reads a hero with a tagline and one-sentence sub-line that distinguishes JigSpec's reliability + autonomy claim from the breathless agentic-AI noise; the sub-line is *falsifiable* (e.g. "agents that pass your existing CI before they ship a change," not "the future of work")
+- [x] **CONTENT-02**: Visitor reads a 250–400 word "What is agentic AI" educational section that gives a non-expert a working definition in under 90 seconds, structurally treated (heading + body + a contrast element like a small table or two-column layout) — direct response to the buggerd post-mortem
+- [x] **CONTENT-03**: Visitor sees a 6-card product grid with **equal visual footprint** for every card, in narrative order: buggerd, scientific paper agent, triage + router bot, always-on recorder + extractor, Agentic Employees, Delegate
+- [x] **CONTENT-04**: Each product card displays a one-state stage badge (`Shipping` for buggerd, `Probe` for the 4 concept-stage products including Agentic Employees, `Sibling` for Delegate) so visitors can read what's real vs. what's being measured without leaving the grid
+- [x] **CONTENT-05**: The entire surface of every product card is clickable (not just an inline button) and navigates to that card's landing destination: buggerd → `https://buggerd.com` (external, opens in new tab); the 5 concept cards → an on-site product landing page at `/products/[slug]` (CONTENT-09); analytics fires `card:open` (concepts) or `card:cta_external_click` (buggerd) on click
+- [x] **CONTENT-06**: Visitor sees a "Tell us a problem we should solve" section with copy that frames the form as soliciting demand signal beyond our preconceived cards (not a contact form)
 - [ ] **CONTENT-07**: Page footer contains: link to docs (initially the existing VitePress site at jigspec.com or its preview equivalent; flips to `docs.jigspec.com` at cutover), contact email, copyright, and a link to the GitHub org
-- [ ] **CONTENT-08**: All copy avoids fabricated social proof (no testimonials, no "trusted by" logos, no fake metrics, no "industry-leading" superlatives) — honesty constraint inherited from buggerd and Delegate landings
+- [x] **CONTENT-08**: All copy avoids fabricated social proof (no testimonials, no "trusted by" logos, no fake metrics, no "industry-leading" superlatives) — honesty constraint inherited from buggerd and Delegate landings
 - [ ] **CONTENT-09**: Each of the 5 concept cards has its own on-site landing page at `/products/[slug]` rendered from the same `src/content/products/{slug}.md` file via a single `pages/products/[slug].astro` template; the page includes the card's headline + a longer-form description (200–400 words) + an embedded interest form (DEMAND-01) + a back-to-home link; the page reuses Nav/Footer for layout consistency. Buggerd has no such page on this site (its landing is buggerd.com)
 
 ### Demand (the signal-capture mechanism — primary job of the page)
@@ -55,7 +55,7 @@ Requirements for the initial release. Each maps to roadmap phases (filled by roa
 
 - [x] **TECH-01**: Astro 6 project scaffolded with TypeScript strict mode; Tailwind 4 wired via `@tailwindcss/vite` plugin (NOT `@astrojs/tailwind`); `astro-mermaid` v2 + `mdx` + `sitemap` integrations installed; integration order respects `astro-mermaid` first
 - [x] **TECH-02**: `src/content/products/` content collection with one Markdown file per product, validated by a Zod schema with discriminated-union `cta` field (`external` for buggerd, `interest` for the others); `src/content/config.ts` also reserves an empty `blog` collection schema so v2 blog ships without re-platform
-- [ ] **TECH-03**: Component layout: `src/components/sections/` (page-narrative blocks), `src/components/cards/ProductCard.astro`, `src/components/forms/InterestForm.astro` (single primitive parameterized by `productId`), `src/components/diagrams/MermaidDiagram.astro`, `src/components/global/Nav.astro` + `Footer.astro` + `Analytics.astro`
+- [x] **TECH-03**: Component layout: `src/components/sections/` (page-narrative blocks), `src/components/cards/ProductCard.astro`, `src/components/forms/InterestForm.astro` (single primitive parameterized by `productId`), `src/components/diagrams/MermaidDiagram.astro`, `src/components/global/Nav.astro` + `Footer.astro` + `Analytics.astro`
 - [ ] **TECH-04**: `pages/index.astro` is composition only — imports section components in narrative order, contains no business logic, no inline data
 - [x] **TECH-05**: Astro Fonts API self-hosts the chosen typefaces (zero external font CDN); CSP in `vercel.json` does not require font-CDN allowlisting
 
@@ -109,14 +109,14 @@ Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONTENT-01 | Phase 2 | Pending |
-| CONTENT-02 | Phase 2 | Pending |
-| CONTENT-03 | Phase 2 | Pending |
-| CONTENT-04 | Phase 2 | Pending |
-| CONTENT-05 | Phase 2 | Pending |
-| CONTENT-06 | Phase 2 | Pending |
+| CONTENT-01 | Phase 2 | Complete |
+| CONTENT-02 | Phase 2 | Complete |
+| CONTENT-03 | Phase 2 | Complete |
+| CONTENT-04 | Phase 2 | Complete |
+| CONTENT-05 | Phase 2 | Complete |
+| CONTENT-06 | Phase 2 | Complete |
 | CONTENT-07 | Phase 2 | Pending |
-| CONTENT-08 | Phase 2 | Pending |
+| CONTENT-08 | Phase 2 | Complete |
 | CONTENT-09 | Phase 2 | Pending |
 | DEMAND-01 | Phase 3 | Pending |
 | DEMAND-02 | Phase 3 | Pending |
@@ -140,7 +140,7 @@ Filled by roadmapper 2026-04-27. Mapped to ROADMAP.md phases.
 | VISUAL-05 | Phase 4 | Pending |
 | TECH-01 | Phase 1 | Complete |
 | TECH-02 | Phase 2 | Complete |
-| TECH-03 | Phase 2 | Pending |
+| TECH-03 | Phase 2 | Complete |
 | TECH-04 | Phase 2 | Pending |
 | TECH-05 | Phase 1 | Complete |
 | DEPLOY-01 | Phase 1 | Complete |
