@@ -1,0 +1,53 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/global/Nav.astro';
+import Footer from '../../components/global/Footer.astro';
+import InterestForm from '../../components/forms/InterestForm.astro';
+
+export const getStaticPaths = (async () => {
+  const products = await getCollection('products');
+  return products
+    .filter((p) => p.data.cta.type === 'interest')
+    .map((product) => ({
+      params: { slug: product.id },
+      props: { product },
+    }));
+}) satisfies GetStaticPaths;
+
+const { product } = Astro.props;
+const { Content } = await render(product);
+---
+
+<Base
+  title={`${product.data.name} — JigSpec`}
+  description={product.data.tagline}
+>
+  <Nav />
+  <main class="flex-1">
+    <article class="max-w-3xl mx-auto px-6 py-16 md:py-24">
+      <p class="text-sm uppercase tracking-widest text-accent">{product.data.stage}</p>
+      <h1 class="font-display text-4xl md:text-5xl tracking-tight text-fg mt-4 leading-tight">
+        {product.data.headline}
+      </h1>
+      <p class="mt-6 text-xl italic text-muted">{product.data.tagline}</p>
+
+      <div class="mt-10 space-y-5 text-fg/90 leading-relaxed [&_h2]:font-display [&_h2]:text-2xl [&_h2]:mt-8 [&_h2]:text-fg [&_h3]:font-display [&_h3]:text-xl [&_h3]:mt-6 [&_h3]:text-fg [&_p]:text-fg/90 [&_a]:text-accent [&_a]:underline [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6">
+        <Content />
+      </div>
+
+      <InterestForm productId={product.id} />
+
+      <a
+        href="/"
+        class="mt-12 inline-block text-accent hover:underline"
+        data-event="nav:link_click"
+        data-link-location="product-detail-back-home"
+      >
+        ← Back to home
+      </a>
+    </article>
+  </main>
+  <Footer />
+</Base>
