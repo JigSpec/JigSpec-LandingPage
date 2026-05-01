@@ -45,7 +45,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   6. All copy passes the honesty audit — no testimonials, no "trusted by" logos, no fabricated metrics, no "industry-leading" superlatives.
 **Plans:** 5 plans
 Plans:
-- [ ] 02-01-content-collection-PLAN.md — Astro 6 content collection (src/content.config.ts) + 6 product markdown files with discriminated cta union
+- [x] 02-01-content-collection-PLAN.md — Astro 6 content collection (src/content.config.ts) + 6 product markdown files with discriminated cta union
 - [ ] 02-02-section-and-card-components-PLAN.md — 9 components: 4 sections, 2 cards (block-link), 2 form-shaped placeholders, 1 Mermaid placeholder shell
 - [ ] 02-03-index-composition-PLAN.md — Composition-only src/pages/index.astro rendering Hero → Explainer → Grid → ProblemPitch in narrative order
 - [ ] 02-04-product-detail-route-PLAN.md — Single dynamic route src/pages/products/[slug].astro generating 5 detail pages (buggerd excluded by cta-type filter)
