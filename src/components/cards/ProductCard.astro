@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import StageBadge from './StageBadge.astro';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+const { product } = Astro.props;
+const { name, tagline, stage, cta } = product.data;
+
+const isExternal = cta.type === 'external';
+const href = isExternal ? cta.url : `/products/${product.id}`;
+const eventName = isExternal ? 'card:cta_external_click' : 'card:open';
+const ctaCopy = isExternal
+  ? `Visit ${new URL(cta.url).hostname} →`
+  : 'Tell us →';
+---
+
+<article class="group relative flex flex-col h-full p-6 border border-muted/20 rounded-md transition-colors hover:border-accent/60 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30">
+  <header class="flex items-baseline justify-between gap-3">
+    <h3 class="font-display text-2xl tracking-tight text-fg">
+      <a
+        href={href}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
+        data-event={eventName}
+        data-product-id={product.id}
+        class="after:absolute after:inset-0 after:content-[''] focus:outline-none"
+      >
+        {name}
+      </a>
+    </h3>
+    <StageBadge stage={stage} />
+  </header>
+  <p class="mt-3 text-muted">{tagline}</p>
+  <footer class="mt-auto pt-4 text-sm text-accent">
+    {ctaCopy}
+  </footer>
+</article>
