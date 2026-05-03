@@ -1,8 +1,8 @@
 ---
 name: "Agentic Employees"
 tagline: "Hire an AI employee for the role. Set the remit, the tools, the hours. They work it."
-stage: "Probe"
-order: 5
+stage: "Open role"
+order: 1
 cta:
   type: "interest"
   label: "Tell us"

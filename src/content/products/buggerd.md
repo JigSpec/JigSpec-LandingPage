@@ -1,8 +1,8 @@
 ---
 name: "buggerd"
 tagline: "Your CI engineer on staff. Finds the failing test, writes the fix, opens the PR."
-stage: "Shipping"
-order: 1
+stage: "Available for work"
+order: 6
 cta:
   type: "external"
   url: "https://buggerd.com"

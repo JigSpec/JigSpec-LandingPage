@@ -1,7 +1,7 @@
 ---
 name: "Always-on recorder + extractor"
 tagline: "Your meeting secretary on staff. Action items in Linear before the call ends."
-stage: "Probe"
+stage: "Open role"
 order: 4
 cta:
   type: "interest"

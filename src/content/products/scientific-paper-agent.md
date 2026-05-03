@@ -1,8 +1,8 @@
 ---
 name: "Scientific paper agent"
 tagline: "Your research analyst on staff. Reads every paper, pulls every citation, flags every contradiction."
-stage: "Probe"
-order: 2
+stage: "Open role"
+order: 5
 cta:
   type: "interest"
   label: "Tell us"
