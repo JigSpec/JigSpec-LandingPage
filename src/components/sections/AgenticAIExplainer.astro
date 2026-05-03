@@ -4,25 +4,24 @@
 ---
 <section id="agentic-ai" class="border-b border-muted/20">
   <div class="max-w-3xl mx-auto px-6 py-20 md:py-24">
-    <p class="text-sm uppercase tracking-widest text-muted">What is agentic AI</p>
+    <p class="text-sm uppercase tracking-widest text-muted">What's the difference</p>
     <h2 class="font-display text-3xl md:text-4xl mt-4 text-fg">
-      A chatbot answers your question. An agent runs your loop.
+      An assistant helps when you ask. An employee owns the function.
     </h2>
     <div class="mt-8 space-y-5 text-fg/90 leading-relaxed">
-      <p>An AI agent is software that takes a goal, picks the tools it needs, runs a multi-step process to completion, and reports back when it's done — or asks a specific question when it isn't. It doesn't wait for you to prompt each step. It doesn't stop at "here's a draft for you to finish." It runs the loop end-to-end and hands you a result you can actually use.</p>
-      <p>Most "agentic AI" demos look impressive and break the moment you run them unsupervised. The failure modes are well-documented: hallucinated steps, tool calls that silently do nothing, compounding errors the agent never catches. The industry sells the capability and papers over the reliability gap. We think that gap is the actual product problem worth solving.</p>
-      <p>JigSpec pipelines are built around explicit review gates — points in the loop where the agent checks its own work against a falsifiable criterion before continuing. Every pipeline is a <code>.pipe.yaml</code> file you can read, fork, and audit. The claim isn't that our agents never fail; it's that when they fail, they fail visibly, at a known checkpoint, with the intermediate state available for inspection.</p>
+      <p>AI assistants are good at the task in front of them. You describe a problem, they help you work through it. That's genuinely useful. But it's still you doing the job — just faster. An AI employee is something different: it owns a function on an ongoing basis, works it without being prompted, and surfaces the things that need a human instead of the things that don't.</p>
+      <p>The failure mode most AI products gloss over is reliability at the function level. A demo that writes a good email is not the same as a system that handles your inbox every morning. Unsupervised AI tends to hallucinate steps, make confident mistakes, and fail silently. A reliable AI employee needs explicit checkpoints — places in its loop where it verifies its own work before it acts, and asks a question instead of guessing when it hits the boundary of its remit.</p>
+      <p>That's what JigSpec builds. Every product is a named function with a defined scope, tool access, and a review gate before anything leaves your environment. The employee analogy isn't marketing — it's the design constraint. Clear remit. Audit log. Kill switch. You always know what it did and why.</p>
     </div>
 
-    <!-- Contrast element per CONTENT-02 — 2-column compare table. -->
     <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 border border-muted/30 rounded-md p-6">
       <div>
-        <p class="text-sm uppercase tracking-widest text-muted">A chatbot</p>
-        <p class="mt-2 text-fg">Responds to a message. Waits for the next one. Has no memory of what happened last session and no way to act on your tools unless you paste the output in yourself.</p>
+        <p class="text-sm uppercase tracking-widest text-muted">An assistant</p>
+        <p class="mt-2 text-fg">Helps when you ask. Waits between sessions. Has no ongoing responsibility and no way to act on your tools without you in the loop for each step.</p>
       </div>
       <div>
-        <p class="text-sm uppercase tracking-widest text-accent">An agent</p>
-        <p class="mt-2 text-fg">Reads your inbox at 8am, classifies 40 messages, routes 38 automatically, surfaces 2 that need a human, and logs every routing decision to a table you can scroll through on Friday.</p>
+        <p class="text-sm uppercase tracking-widest text-accent">An employee</p>
+        <p class="mt-2 text-fg">Owns the function. Works the queue while you sleep. Surfaces the two things that needed a human and handles the thirty-eight that didn't — with a log you can read on Friday.</p>
       </div>
     </div>
   </div>

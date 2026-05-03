@@ -1,16 +1,16 @@
 ---
 name: "Delegate"
-tagline: "Describe what you want off your plate. The agent does it and shows you how."
+tagline: "Your operations coordinator on staff. Hand off the outcome. Get back a report."
 stage: "Sibling"
 order: 6
 cta:
   type: "interest"
   label: "Tell us"
-headline: "Hand off the outcome. Get back a report. Keep the decision."
+headline: "Your operations coordinator on staff."
 ---
 
-Delegate frames the unit of work as an outcome, not a role. You describe what you want done this week — research these five competitors and put a one-page brief in this folder; book three intro calls with founders matching this profile; keep this dashboard's lead list current against the CRM. The agent figures out the right tools and the right human checkpoints, does the work, and reports back when each outcome is closed or stuck.
+An operations coordinator on staff takes outcomes off your plate and closes them. You describe what you want done — research these five competitors and put a brief in this folder, book three intro calls with founders matching this profile, keep this lead list current against the CRM — and they figure out the steps, do the work, and report back when each one is closed or stuck.
 
-Nothing leaves your environment without an explicit confirmation. Email drafts before they send. Calendar invites before they go out. Briefs before they land in the shared drive. Every outcome carries the trail of how the agent got there, and stuck outcomes surface as questions, not as silent failures. The reliability claim is shaped around outcomes, not actions: the agent's job is to close what you handed off and ask about what it can't.
+Nothing leaves your environment without an explicit confirmation. Drafts before they send. Invites before they go out. Briefs before they land in the shared folder. Every closed outcome carries the trail of how the employee got there. Stuck outcomes surface as specific questions, not silent failures. The reliability constraint: close what you can, ask about what you can't, never act outside the scope of what was handed to you.
 
-Delegate is a Sibling project to Agentic Employees — running in parallel, distinct in framing. Where Agentic Employees is about filling a named role, Delegate is about clearing a backlog. The demand signal across both cards is what tells us whether these are two products or one. If you'd pay for the outcome shape of this, the form below is where you say so — and the first outcome you'd hand off is the answer that helps us most.
+Delegate is the sibling to Agentic Employees — running in parallel, different in framing. Where Agentic Employees fills a named role, Delegate clears a backlog. We're not sure yet whether these are two products or one, and the demand signal from both cards is what decides. If you'd pay for the outcome shape of this, the form below is where you say so — and the first thing you'd hand off is the answer that helps us most.

@@ -1,16 +1,16 @@
 ---
 name: "Always-on recorder + extractor"
-tagline: "Turns your recordings into action items in the tools where they belong."
+tagline: "Your meeting secretary on staff. Action items in Linear before the call ends."
 stage: "Probe"
 order: 4
 cta:
   type: "interest"
   label: "Tell us"
-headline: "Meeting over. Action items already in Linear."
+headline: "Your meeting secretary on staff."
 ---
 
-Meetings produce decisions and commitments that vanish into note-app voids. Sales calls produce next steps nobody writes down. The structural fix isn't another note-taker — it's an agent that works on recordings your team is already making and turns them into the structured artifacts your tools already understand.
+A meeting secretary on staff turns recordings into structured artifacts without being asked. The call ends, the recording goes in, and the action items are already in Linear, the commitments are already in the CRM, and the decisions are already in the doc your team maintains — each one linked back to the clip it came from so anyone can verify what was actually said.
 
-The loop runs end-to-end on a meeting: import the recording, transcribe, extract decisions and action items and open questions and owners, and push them where they belong — the issue tracker for action items, the CRM for sales-call commitments, the doc your team already maintains for decisions. The reliability claim is built from boundaries, not promises. No silent pushes to your CRM or issue tracker — every item lands in a review queue with the source clip linked. Recording is opt-in per meeting, not always-on by default; "always-on" means the agent is always available, not that the microphone is always live. An on-device transcription mode handles teams with hard audio privacy requirements.
+The reliability constraint is the same one you'd put on a new ops hire: don't push to the CRM without showing me first. Every extracted item lands in a review queue before it goes anywhere. Recording is opt-in per meeting; the "always-on" means the employee is always available, not that the microphone is always live. For teams with hard audio privacy requirements, an on-device transcription mode keeps audio off external servers entirely.
 
-This is a Probe. If you run customer-development calls, manage structured interview loops, or track commitments across sales pipelines, the form below is where you tell us — and if you have a hard "no audio off-device" constraint, that's the detail that shapes whether and how we build it.
+This is a Probe. If you run customer-development calls, track sales commitments across pipelines, or manage structured interview loops, the form below is where you tell us — and if "no audio off-device" is a hard constraint for you, that's the answer that shapes how we build it.
