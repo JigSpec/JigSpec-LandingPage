@@ -74,7 +74,11 @@ Plans:
   3. Both diagrams render legibly at 320px / 375px / 414px viewport widths verified on a real device or browser device-emulation — illegible nodes are not acceptable; horizontal scroll on the diagram element is.
   4. An external cold-read reviewer (≥1 person who has not seen the page in development, ideally the non-technical co-founder) is asked to describe what JigSpec does in their own words within 60 seconds; if they cannot, copy / visual choices are iterated before cutover is considered.
   5. The production build serves at the long-lived preview URL (e.g. `jigspec.vercel.app`) for ≥24h with: zero browser-console errors, zero PostHog ingestion errors, custom 404 page in place, OG image and favicon shipped, accessibility audit passed (focus rings, alt text, semantic landmarks), Lighthouse ≥95 on perf/a11y/SEO/best-practices, and the "Looks Done But Isn't" 16-item checklist from PITFALLS.md verified.
-**Plans**: TBD
+**Plans:** 4 plans
+- [ ] 04-01-PLAN.md — Install Mermaid + sitemap deps; rewrite MermaidDiagram.astro with IO + dynamic-import lazy-load island (DIAGRAM-03)
+- [ ] 04-02-PLAN.md — Author DIAGRAM-01 + DIAGRAM-02 source strings, place 2 instances in index.astro, human-verify mobile legibility at 320/375/414px (DIAGRAM-01, DIAGRAM-02, DIAGRAM-04)
+- [ ] 04-03-PLAN.md — Wire @astrojs/sitemap; extend Base.astro with OG meta + canonical + favicons; ship 404.astro, og.png (1200×630), apple-touch-icon.png, robots.txt; document mmdc fallback recipe (DIAGRAM-05)
+- [ ] 04-04-PLAN.md — 24h preview soak: enable PostHog $exception, capture T+0/12/24h snapshots, complete 16-item PITFALLS table, Lighthouse ≥95 via PSI, OG debugger PASS, VISUAL-05 cold-read review (VISUAL-05 / SC#5)
 **UI hint**: yes
 
 ### Phase 5: Apex DNS Cutover (Gated)
