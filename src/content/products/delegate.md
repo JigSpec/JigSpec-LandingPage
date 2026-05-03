@@ -2,7 +2,7 @@
 name: "Delegate"
 tagline: "Your operations coordinator on staff. Hand off the outcome. Get back a report."
 stage: "Open role"
-order: 2
+order: 5
 cta:
   type: "interest"
   label: "Tell us"

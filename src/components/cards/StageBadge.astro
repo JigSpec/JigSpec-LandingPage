@@ -1,12 +1,13 @@
 ---
 interface Props {
-  stage: 'Available for work' | 'Open role';
+  stage: 'Available for work' | 'Interning' | 'Open role';
 }
 const { stage } = Astro.props;
 
 const variants: Record<string, string> = {
   'Available for work': 'bg-accent text-bg px-2 py-0.5 text-xs uppercase tracking-wider font-semibold rounded-sm',
-  'Open role': 'border border-muted/40 text-muted px-2 py-0.5 text-xs uppercase tracking-wider font-semibold rounded-sm',
+  'Interning':         'border border-accent/60 text-accent px-2 py-0.5 text-xs uppercase tracking-wider font-semibold rounded-sm',
+  'Open role':         'border border-muted/40 text-muted px-2 py-0.5 text-xs uppercase tracking-wider font-semibold rounded-sm',
 };
 ---
 <span class={variants[stage]} aria-label={`Stage: ${stage}`}>{stage}</span>

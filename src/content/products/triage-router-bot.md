@@ -1,8 +1,8 @@
 ---
 name: "Triage + router bot"
 tagline: "Your inbox manager on staff. Every message classified, enriched, and routed before you open it."
-stage: "Open role"
-order: 3
+stage: "Interning"
+order: 1
 cta:
   type: "interest"
   label: "Tell us"
