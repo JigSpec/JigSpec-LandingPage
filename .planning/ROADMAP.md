@@ -2,7 +2,7 @@
 
 ## Overview
 
-The JigSpec landing page is built in five phases that move strictly from "scaffold + visual decisions" to "static document anyone can read" to "instrumented + lead-capturing" to "polished + soaked at preview" to "cutover at the apex." Each phase exists to gate a specific class of failure: Phase 1 gates the editorial-aesthetic execution risk (Pitfall 7) by forcing a sketch comparison before any layout commits; Phase 2 gates the agentic-recognition failure (Pitfall 1) and junk-drawer read (Pitfall 2) by producing a complete static document that a cold-read reviewer can evaluate before any form/analytics/diagram noise; Phase 3 gates demand-signal contamination (Pitfall 4) and the PostHog notification gap (Pitfall 5) by wiring analytics *before* forms and the webhook destination on day one; Phase 4 gates Mermaid degradation (Pitfall 6) and final polish (Pitfall 7); Phase 5 gates apex-cutover collateral damage (Pitfall 3) with five concrete sub-criteria from DEPLOY-04. The page must exist as a real preview URL from end of Phase 1; the apex must not move until every Phase 5 gate criterion is checked.
+The JigSpec landing page is built in four phases that move strictly from "scaffold + visual decisions" to "static document anyone can read" to "instrumented + lead-capturing + polished + soaked at preview" to "cutover at the apex." Each phase exists to gate a specific class of failure: Phase 1 gates the editorial-aesthetic execution risk (Pitfall 7) by forcing a sketch comparison before any layout commits; Phase 2 gates the agentic-recognition failure (Pitfall 1) and junk-drawer read (Pitfall 2) by producing a complete static document that a cold-read reviewer can evaluate before any form/analytics/diagram noise; Phase 3 gates demand-signal contamination (Pitfall 4), the PostHog notification gap (Pitfall 5), Mermaid degradation (Pitfall 6), and final polish (Pitfall 7); Phase 4 gates apex-cutover collateral damage (Pitfall 3) with five concrete sub-criteria from DEPLOY-04. The page must exist as a real preview URL from end of Phase 1; the apex must not move until every Phase 4 gate criterion is checked.
 
 ## Phases
 
@@ -14,9 +14,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Scaffold, Sketches & Visual Shell** - Astro/Tailwind/Vercel project building; two voice/visual sketches compared and one direction picked; layout shell with typography scale, palette, and responsive nav/footer deployed to a preview URL.
 - [ ] **Phase 2: Content & Static Page** - Typed content collections, six product Markdown files, all home-page section components (hero, explainer, card grid with whole-card-clickable navigation, problem-pitch, diagram placeholders, footer) rendering end-to-end as a reviewable static document; per-concept landing pages at `/products/[slug]` rendered from the same content collection via a single dynamic-route template; no analytics, no working forms, no Mermaid runtime yet.
-- [ ] **Phase 3: Analytics, Forms & Notifications** - PostHog snippet + typed analytics wrapper with full event-name union; canary events verified end-to-end on preview; per-card interest forms + general problem-pitch capture wired with identify-on-submit; notification destination (Slack or Zapier-to-Gmail) wired and proven by a test submission; PostHog dashboard live; demand-ranking metric committed in writing.
-- [ ] **Phase 4: Diagrams, Polish & Preview Soak** - Mermaid lazy-load island + two diagrams rendering; mobile rendering verified at 320/375/414px; OG image, favicon, custom 404, accessibility audit, Lighthouse ≥95; external cold-read review completed; production preview URL serving without errors for ≥24h.
-- [ ] **Phase 5: Apex DNS Cutover (Gated)** - jigspec.com swapped from the existing VitePress site to this Astro site, gated on five concrete prerequisites (docs subdomain live, redirect map deployed, header banner deployed, ≥3 docs users validated, 404 monitoring configured).
+- [ ] **Phase 3: Ship It** - PostHog analytics + typed wrapper + canary gate + per-card interest forms + general problem-pitch capture + webhook notification destination wired and verified + demand-ranking metric committed in writing + Mermaid lazy-load island + two diagrams rendering + mobile legibility verified + OG image/favicon/sitemap/404 shipped + external cold-read completed + production preview soaked ≥24h before cutover is considered.
+- [ ] **Phase 4: Apex DNS Cutover (Gated)** - jigspec.com swapped from the existing VitePress site to this Astro site, gated on five concrete prerequisites (docs subdomain live, redirect map deployed, header banner deployed, ≥3 docs users validated, 404 monitoring configured).
 
 ## Phase Details
 
@@ -52,38 +51,37 @@ Plans:
 - [x] 02-05-doc-drift-and-phase-verification-PLAN.md — Patch src/content.config.ts path drift in REQUIREMENTS/ROADMAP, wire npm run honesty-audit, full Phase 2 verification chain + human cold-read checkpoint
 **UI hint**: yes
 
-### Phase 3: Analytics, Forms & Notifications
-**Goal**: The page captures clean, attributable demand signal — every event flows through one typed wrapper with no naming drift, every form submission identifies the user before the event fires and triggers an external notification, and the demand-ranking metric the page is built to produce is committed in writing before the first real visitor.
+### Phase 3: Ship It
+**Goal**: Analytics, forms, notifications, Mermaid diagrams, and full polish land together — the page captures clean demand signal, both diagrams render without tanking initial paint, an external cold-read confirms positioning, and the production build soaks at the preview URL for ≥24h before cutover is considered.
 **Depends on**: Phase 2
-**Requirements**: ANALYTICS-01, ANALYTICS-02, ANALYTICS-03, ANALYTICS-04, ANALYTICS-05, DEMAND-01, DEMAND-02, DEMAND-03, DEMAND-04, DEMAND-05
+**Requirements**: ANALYTICS-01, ANALYTICS-02, ANALYTICS-03, ANALYTICS-04, ANALYTICS-05, DEMAND-01, DEMAND-02, DEMAND-03, DEMAND-04, DEMAND-05, DIAGRAM-01, DIAGRAM-02, DIAGRAM-03, DIAGRAM-04, DIAGRAM-05, VISUAL-05
 **Success Criteria** (what must be TRUE):
   1. PostHog browser SDK is initialized via `<script is:inline>` on the preview deploy with `person_profiles: 'identified_only'`, `defaults: '2026-01-30'`, `autocapture: false`, `capture_pageview: true`, `capture_pageleave: true`; the canary events `page:home_view` and `nav:link_click` are verified arriving in PostHog from the preview URL *before* any form ships to that environment.
   2. All event firing routes through `src/lib/analytics.ts` whose `track(eventName, props)` first argument is a string-literal union covering the full taxonomy (`page:home_view`, `nav:link_click`, `card:open`, `card:cta_external_click`, `form:open`, `form:abandon`, `form:submit`, `problem_pitch:submit`, `diagram:view`, `educator:scroll_complete`, `footer:link_click`); a grep for `posthog.capture(` outside `analytics.ts` returns zero hits.
   3. Submitting any per-card interest form (PostHog Surveys, with a `productId` discriminator and a *required* qualitative free-text field) calls `posthog.identify(email, {email, first_signup_location})` *before* `track('form:submit', ...)`, shows a confirmation state, and triggers a Slack/Zapier/Gmail webhook notification verified by an end-to-end test submission; submitting the general "tell us a problem" form (bare `posthog.capture('problem_pitch', ...)`) does the same.
   4. A PostHog dashboard exists showing per-card submit count, per-card click-through rate, per-card form-open-to-submit conversion, weighted demand-rank ordering, and the qualitative free-text values surfaced in a readable list; a weekly calendar reminder is also set as a backstop so leads can't accumulate unseen.
   5. A `demand-metric.md` (or equivalent section in PROJECT.md) is committed to the repo specifying the formula `1.0×submits + 0.3×opens + 0.1×clicks + 0.05×dwell_seconds`, the gate condition `5 form submits per card OR 4 weeks of traffic, whichever comes first`, and the action that triggers (vertical-pick decision).
-**Plans**: TBD
-
-### Phase 4: Diagrams, Polish & Preview Soak
-**Goal**: The page is shippable — both Mermaid diagrams render cleanly without tanking initial paint, every "Looks Done But Isn't" item is verified, an external cold-read confirms the positioning lands, and the production build has soaked at the preview URL for ≥24h with no errors in PostHog or browser console.
-**Depends on**: Phase 3
-**Requirements**: DIAGRAM-01, DIAGRAM-02, DIAGRAM-03, DIAGRAM-04, DIAGRAM-05, VISUAL-05
-**Success Criteria** (what must be TRUE):
-  1. Diagram 1 ("How an agentic pipeline runs", input → agent steps → tool calls → *visible* review gates → output, captioned to tie to the reliability claim) and Diagram 2 ("How JigSpec ships a product to you", 4–5 nodes max, captioned) render inline on the preview URL; visiting the page fires `diagram:view` for each only when the diagram enters the viewport.
-  2. Both diagrams are lazy-loaded via IntersectionObserver + dynamic `import('mermaid')` so the ~700KB Mermaid runtime does not block initial paint; the page still meets Lighthouse mobile-perf gate (LCP ≤ 2.5s, CLS ≤ 0.1, first-load JS within budget); a build-time-SVG fallback path (`@rendermaid/core` or `mmdc`) is documented and ready to swap in if the gate fails post-soak.
-  3. Both diagrams render legibly at 320px / 375px / 414px viewport widths verified on a real device or browser device-emulation — illegible nodes are not acceptable; horizontal scroll on the diagram element is.
-  4. An external cold-read reviewer (≥1 person who has not seen the page in development, ideally the non-technical co-founder) is asked to describe what JigSpec does in their own words within 60 seconds; if they cannot, copy / visual choices are iterated before cutover is considered.
-  5. The production build serves at the long-lived preview URL (e.g. `jigspec.vercel.app`) for ≥24h with: zero browser-console errors, zero PostHog ingestion errors, custom 404 page in place, OG image and favicon shipped, accessibility audit passed (focus rings, alt text, semantic landmarks), Lighthouse ≥95 on perf/a11y/SEO/best-practices, and the "Looks Done But Isn't" 16-item checklist from PITFALLS.md verified.
-**Plans:** 4 plans
-- [ ] 04-01-PLAN.md — Install Mermaid + sitemap deps; rewrite MermaidDiagram.astro with IO + dynamic-import lazy-load island (DIAGRAM-03)
-- [ ] 04-02-PLAN.md — Author DIAGRAM-01 + DIAGRAM-02 source strings, place 2 instances in index.astro, human-verify mobile legibility at 320/375/414px (DIAGRAM-01, DIAGRAM-02, DIAGRAM-04)
-- [ ] 04-03-PLAN.md — Wire @astrojs/sitemap; extend Base.astro with OG meta + canonical + favicons; ship 404.astro, og.png (1200×630), apple-touch-icon.png, robots.txt; document mmdc fallback recipe (DIAGRAM-05)
-- [ ] 04-04-PLAN.md — 24h preview soak: enable PostHog $exception, capture T+0/12/24h snapshots, complete 16-item PITFALLS table, Lighthouse ≥95 via PSI, OG debugger PASS, VISUAL-05 cold-read review (VISUAL-05 / SC#5)
+  6. Diagram 1 ("How an agentic pipeline runs") and Diagram 2 ("How JigSpec ships a product to you") render inline on the preview URL; visiting the page fires `diagram:view` for each only when the diagram enters the viewport.
+  7. Both diagrams are lazy-loaded via IntersectionObserver + dynamic `import('mermaid')` so the ~700KB Mermaid runtime does not block initial paint; the page still meets Lighthouse mobile-perf gate (LCP ≤ 2.5s, CLS ≤ 0.1); a build-time-SVG fallback path is documented and ready to swap in if the gate fails post-soak.
+  8. Both diagrams render legibly at 320px / 375px / 414px viewport widths verified on a real device or browser device-emulation — illegible nodes are not acceptable; horizontal scroll on the diagram element is.
+  9. An external cold-read reviewer (≥1 person who has not seen the page in development) is asked to describe what JigSpec does in their own words within 60 seconds; if they cannot, copy / visual choices are iterated before cutover is considered.
+  10. The production build serves at the long-lived preview URL for ≥24h with: zero browser-console errors, zero PostHog ingestion errors, custom 404 page in place, OG image and favicon shipped, accessibility audit passed, Lighthouse ≥95 on perf/a11y/SEO/best-practices, and the "Looks Done But Isn't" 16-item checklist from PITFALLS.md verified.
+**Plans:** 9 plans
+Plans:
+- [ ] 03-01-PLAN.md — Lay the env-var rails for Phase 3: PostHog project exists, API key in Vercel env vars across all three scopes and mirrored locally in `.env.local`
+- [ ] 03-02-PLAN.md — Ship the typed analytics wrapper (src/lib/analytics.ts) with EventName union + EventProps mapped type + four export functions; zero consumers wired yet
+- [ ] 03-03-PLAN.md — Ship the PostHog SDK to the live preview, prove canary events end-to-end via ANALYTICS-05 gate, lay all non-form analytics rails (nav, footer, cards, explainer, diagram)
+- [ ] 03-04-PLAN.md — Wire forms: InterestForm + ProblemPitchForm capture demand signal end-to-end with identify-before-track ordering; PostHog Surveys created + UUIDs pasted; notification destination wired and test-submitted
+- [ ] 03-05-PLAN.md — Close Phase 3: commit demand-metric.md formula + gate condition, wire PostHog dashboard, set weekly calendar reminder, run Phase 3 verification chain
+- [ ] 03-06-PLAN.md — Install Mermaid runtime + sitemap integration; rewrite MermaidDiagram.astro with IntersectionObserver + dynamic import lazy-load island (DIAGRAM-03)
+- [ ] 03-07-PLAN.md — Author DIAGRAM-01 + DIAGRAM-02 source strings, place 2 instances in index.astro, human-verify mobile legibility at 320/375/414px (DIAGRAM-01, DIAGRAM-02, DIAGRAM-04)
+- [ ] 03-08-PLAN.md — Wire @astrojs/sitemap; extend Base.astro with OG meta + canonical + favicons; ship 404.astro, og.png (1200×630), apple-touch-icon.png, robots.txt; document mmdc fallback recipe (DIAGRAM-05)
+- [ ] 03-09-PLAN.md — 24h preview soak: enable PostHog $exception, capture T+0/12/24h snapshots, complete 16-item PITFALLS table, Lighthouse ≥95 via PSI, OG debugger PASS, VISUAL-05 cold-read review (VISUAL-05 / SC#10)
 **UI hint**: yes
 
-### Phase 5: Apex DNS Cutover (Gated)
+### Phase 4: Apex DNS Cutover (Gated)
 **Goal**: jigspec.com serves this Astro marketing site at the apex without losing the developer-docs audience, breaking inbound links from tutorials/READMEs/external blog posts, or surfacing 404s on legacy docs paths. The DNS swap is the *last* deploy that touches production, gated on five hard prerequisites — not a date.
-**Depends on**: Phase 4
+**Depends on**: Phase 3
 **Requirements**: DEPLOY-04
 **Success Criteria** (what must be TRUE — verbatim from DEPLOY-04, ALL required before DNS swap):
   1. `docs.jigspec.com` is live and serving the existing VitePress content.
@@ -96,12 +94,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold, Sketches & Visual Shell | 0/TBD | Not started | - |
 | 2. Content & Static Page | 0/5 | Not started | - |
-| 3. Analytics, Forms & Notifications | 0/TBD | Not started | - |
-| 4. Diagrams, Polish & Preview Soak | 0/TBD | Not started | - |
-| 5. Apex DNS Cutover (Gated) | 0/TBD | Not started | - |
+| 3. Ship It | 0/9 | Not started | - |
+| 4. Apex DNS Cutover (Gated) | 0/TBD | Not started | - |

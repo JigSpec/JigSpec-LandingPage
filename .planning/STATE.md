@@ -7,11 +7,11 @@ stopped_at: Phase 02 complete
 last_updated: "2026-05-03T17:00:03.725Z"
 last_activity: 2026-05-03 -- Phase 4 planning complete
 progress:
-  total_phases: 5
+  total_phases: 4
   completed_phases: 2
-  total_plans: 18
+  total_plans: 14
   completed_plans: 9
-  percent: 50
+  percent: 64
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 Phase: 02 (content-static-page) — EXECUTING
 Plan: 5 of 5
 Status: Ready to execute
-Last activity: 2026-05-03 -- Phase 4 planning complete
+Last activity: 2026-05-03 -- Collapsed phases 3+4 into Phase 3 Ship It; Phase 5 renumbered to Phase 4
 
 Progress: [██████████] 100%
 
@@ -84,7 +84,7 @@ None yet.
 ### Blockers/Concerns
 
 - **REQUIREMENTS.md count discrepancy** — REQUIREMENTS.md bottom counter says "v1 requirements: 36 total" but the Traceability table actually lists 37 (CONTENT 8 + DEMAND 5 + ANALYTICS 5 + DIAGRAM 5 + VISUAL 5 + TECH 5 + DEPLOY 4). Roadmap maps all 37; counter updated to 37 in this pass.
-- **Phase 5 cutover prerequisite** — `docs.jigspec.com` must be stood up (even just pointing at the existing VitePress build) before the apex DNS swap can happen. This is not a v1 deliverable on the marketing repo but it is a hard dependency the user owns; flagged for tracking outside this codebase.
+- **Phase 4 cutover prerequisite** — `docs.jigspec.com` must be stood up (even just pointing at the existing VitePress build) before the apex DNS swap can happen. This is not a v1 deliverable on the marketing repo but it is a hard dependency the user owns; flagged for tracking outside this codebase.
 
 ## Deferred Items
 
