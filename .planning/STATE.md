@@ -101,6 +101,7 @@ Items acknowledged and carried forward:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260503-oqq | Collapse phases 3 and 4 into single phase | 2026-05-03 | 50372c8 | [260503-oqq-collapse-phases-3-and-4-into-single-phas](.planning/quick/260503-oqq-collapse-phases-3-and-4-into-single-phas/) |
+| 260503-p04 | Fill all placeholder copy with real content | 2026-05-03 | f95e48d | [260503-p04-fill-all-placeholder-copy-with-real-cont](.planning/quick/260503-p04-fill-all-placeholder-copy-with-real-cont/) |
 
 ## Session Continuity
 
