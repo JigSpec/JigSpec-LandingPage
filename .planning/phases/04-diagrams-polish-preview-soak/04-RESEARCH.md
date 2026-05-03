@@ -699,26 +699,30 @@ The absolute URL (https://jigspec.com/og.png) matters — relative paths sometim
 | A7 | `og.png` referenced as absolute `https://jigspec.com/og.png` works on preview deploys for the soak (even though the preview URL host differs) | Code Examples | Risk: cosmetic — preview unfurling may fail, but production unfurling will succeed. Not a soak gate. |
 | A8 | `@rendermaid/core` remains JSR-only and pre-1.0 in 2026-04 (npm view returned 404) | Standard Stack | Risk: low — even if package matures, `mmdc` remains the safer fallback for production. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should DIAGRAM-01 be a `flowchart` or a `sequenceDiagram`?**
    - What we know: requirement says "input → agent → tools → review gates → output" — that's narrative, not strictly time-ordered.
    - What's unclear: whether the visual emphasis on review gates as discrete decision points reads better as a flowchart (gates as rhombus nodes) or a sequence (gates as alt blocks).
+   - **RESOLVED:** DIAGRAM-01 uses `flowchart` syntax for v1; iterate on cold-reader feedback in Plan 04-04.
    - Recommendation: ship `flowchart` first (simpler, more familiar). If cold-reader reports "I don't see the review gates," try sequence.
 
 2. **Single shared `og.png` vs per-section OG (e.g., one for the agentic AI explainer page section)?**
    - What we know: v1 is single-page, so OG-per-section doesn't apply yet.
    - What's unclear: in the future, deep links to `/#agentic-ai-explainer` — do those need their own OG?
+   - **RESOLVED:** Single shared `og.png` (1200×630) at `public/og.png`; per-section OG deferred — anchor links inherit page-level OG.
    - Recommendation: defer. Anchor links inherit the page-level OG; that's the correct behavior.
 
 3. **Does Phase 4's `track('diagram:view', { diagram_id })` deduplicate against Phase 3's placeholder observer?**
    - What we know: Phase 3 wires a `diagram:view` IO against `[data-diagram-id]` on the placeholder.
    - What's unclear: after Phase 4 swaps the placeholder body, does the Phase 3 observer still fire (probably yes, since the data attribute remains)?
+   - **RESOLVED:** Phase 3's IO observer at `src/scripts/io-observer.ts` is the single owner of the `diagram:view` event. Phase 4's MermaidDiagram component MUST NOT call `track('diagram:view', ...)`. Verification: `grep -c "track\('diagram:view'" src/components/diagrams/` returns 0.
    - Recommendation: Plan must reconcile. **Choice A** (preferred): keep Phase 3 observer on placeholder entry; Phase 4 does NOT fire `track('diagram:view', ...)` from render path. Rationale: placeholder entry signals "user scrolled to this section" — that's the funnel signal we want. Render-success is more granular but loses the failure path. **Choice B:** Phase 4 fires from render-success; Phase 3 observer is removed in this plan. Riskier — loses signal if Mermaid fails to load.
 
 4. **Should we add Vercel Speed Insights free tier during soak?**
    - What we know: Vercel offers a free Speed Insights tier that requires `@vercel/analytics`/`@vercel/speed-insights` package install.
    - What's unclear: whether this duplicates PostHog's web vitals capture (PostHog 1.371+ captures CLS/LCP/INP automatically when enabled).
+   - **RESOLVED:** Vercel Speed Insights NOT installed during soak; PostHog covers web vitals, manual PSI covers Lighthouse.
    - Recommendation: skip. PostHog covers this; soak does manual PSI. Keep the dependency surface small.
 
 ## Environment Availability
