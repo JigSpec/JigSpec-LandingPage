@@ -4,25 +4,25 @@
 ---
 <section id="agentic-ai" class="border-b border-muted/20">
   <div class="max-w-3xl mx-auto px-6 py-20 md:py-24">
-    <p class="text-sm uppercase tracking-widest text-muted">[What is agentic AI]</p>
+    <p class="text-sm uppercase tracking-widest text-muted">What is agentic AI</p>
     <h2 class="font-display text-3xl md:text-4xl mt-4 text-fg">
-      [Section headline — plain-English working definition]
+      A chatbot answers your question. An agent runs your loop.
     </h2>
     <div class="mt-8 space-y-5 text-fg/90 leading-relaxed">
-      <p>[Paragraph 1 — what an agent is and isn't, ~80 words. Bracketed-placeholder Sketch B voice. Avoid superlatives per CONTENT-08.]</p>
-      <p>[Paragraph 2 — the reliability/autonomy claim, ~80 words. Frame against "breathless agentic-AI noise." No fabricated metrics.]</p>
-      <p>[Paragraph 3 — what makes JigSpec's recipe different, ~80 words. Reference review-gates, falsifiable claims, the .pipe.yaml spec posture.]</p>
+      <p>An AI agent is software that takes a goal, picks the tools it needs, runs a multi-step process to completion, and reports back when it's done — or asks a specific question when it isn't. It doesn't wait for you to prompt each step. It doesn't stop at "here's a draft for you to finish." It runs the loop end-to-end and hands you a result you can actually use.</p>
+      <p>Most "agentic AI" demos look impressive and break the moment you run them unsupervised. The failure modes are well-documented: hallucinated steps, tool calls that silently do nothing, compounding errors the agent never catches. The industry sells the capability and papers over the reliability gap. We think that gap is the actual product problem worth solving.</p>
+      <p>JigSpec pipelines are built around explicit review gates — points in the loop where the agent checks its own work against a falsifiable criterion before continuing. Every pipeline is a <code>.pipe.yaml</code> file you can read, fork, and audit. The claim isn't that our agents never fail; it's that when they fail, they fail visibly, at a known checkpoint, with the intermediate state available for inspection.</p>
     </div>
 
     <!-- Contrast element per CONTENT-02 — 2-column compare table. -->
     <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 border border-muted/30 rounded-md p-6">
       <div>
-        <p class="text-sm uppercase tracking-widest text-muted">[A chatbot]</p>
-        <p class="mt-2 text-fg">[1-line contrast — e.g. "responds when you ask. waits between messages. forgets after the session."]</p>
+        <p class="text-sm uppercase tracking-widest text-muted">A chatbot</p>
+        <p class="mt-2 text-fg">Responds to a message. Waits for the next one. Has no memory of what happened last session and no way to act on your tools unless you paste the output in yourself.</p>
       </div>
       <div>
-        <p class="text-sm uppercase tracking-widest text-accent">[An agent]</p>
-        <p class="mt-2 text-fg">[1-line contrast — e.g. "runs your loop end-to-end. picks up tools. checks its own work before it reports back."]</p>
+        <p class="text-sm uppercase tracking-widest text-accent">An agent</p>
+        <p class="mt-2 text-fg">Reads your inbox at 8am, classifies 40 messages, routes 38 automatically, surfaces 2 that need a human, and logs every routing decision to a table you can scroll through on Friday.</p>
       </div>
     </div>
   </div>

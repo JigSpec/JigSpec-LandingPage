@@ -1,16 +1,16 @@
 ---
 name: "Delegate"
-tagline: "[Tagline placeholder — one-line for the Delegate sibling project, replace in copy pass]"
+tagline: "Describe what you want off your plate. The agent does it and shows you how."
 stage: "Sibling"
 order: 6
 cta:
   type: "interest"
   label: "Tell us"
-headline: "[Delegate — falsifiable detail-page headline, replace in copy pass]"
+headline: "Hand off the outcome. Get back a report. Keep the decision."
 ---
 
-[Body placeholder — Delegate is the operations-shaped sibling to the agent products on this page. Where Agentic Employees frames the unit of work as a named role, Delegate frames it as an outcome: a list of things you actually want done this week, handed off to an agent surface that figures out the right tools and the right human checkpoints to get them done, and reports back when each one is closed. The framing is "what do I want off my plate" instead of "who do I want to add to the team."]
+Delegate frames the unit of work as an outcome, not a role. You describe what you want done this week — research these five competitors and put a one-page brief in this folder; book three intro calls with founders matching this profile; keep this dashboard's lead list current against the CRM. The agent figures out the right tools and the right human checkpoints, does the work, and reports back when each outcome is closed or stuck.
 
-[The loop runs on outcomes the operator describes in plain language: research these five competitors and put a one-page brief in this folder; book three intro calls in the next two weeks with founders matching this profile; keep this dashboard's lead list current against the CRM. The agent surface picks the tools, executes the steps, and surfaces the rationale at every checkpoint a human needs to weigh in on (the email draft before it sends, the calendar invite before it goes out, the brief before it lands in the shared drive). The reliability claim is shaped around outcomes, not actions: nothing leaves the operator's environment without an explicit confirmation, every outcome carries the trail of how the agent got there, and stuck outcomes surface as questions, not as silent failures.]
+Nothing leaves your environment without an explicit confirmation. Email drafts before they send. Calendar invites before they go out. Briefs before they land in the shared drive. Every outcome carries the trail of how the agent got there, and stuck outcomes surface as questions, not as silent failures. The reliability claim is shaped around outcomes, not actions: the agent's job is to close what you handed off and ask about what it can't.
 
-[Audience: freelancers, consultants, founders, operators — anyone who already knows the job they want done and just needs the doing-of-it taken off their plate. The Sibling stage marks Delegate as a project running in parallel; this card is here on the JigSpec page because the demand signal across cards 5 and 6 is what tells us whether Agentic Employees and Delegate are two products or one. If you'd pay for the outcome shape of this, the form below is where you say so, and ideally name the first outcome you'd hand off.]
+Delegate is a Sibling project to Agentic Employees — running in parallel, distinct in framing. Where Agentic Employees is about filling a named role, Delegate is about clearing a backlog. The demand signal across both cards is what tells us whether these are two products or one. If you'd pay for the outcome shape of this, the form below is where you say so — and the first outcome you'd hand off is the answer that helps us most.

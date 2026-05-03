@@ -1,17 +1,17 @@
 ---
 name: "buggerd"
-tagline: "[Tagline placeholder — one-line buggerd description that names the agentic-CI claim, replace in copy pass]"
+tagline: "Your CI is red. buggerd finds the failing test, writes the fix, and opens a PR. You review it."
 stage: "Shipping"
 order: 1
 cta:
   type: "external"
   url: "https://buggerd.com"
   label: "Visit buggerd.com"
-headline: "[Buggerd detail-page headline — not used since buggerd has no on-site detail page, but required by the schema]"
+headline: "buggerd fixes failing CI runs so you don't have to."
 ---
 
-[Body placeholder — buggerd is the only `Shipping` card in the Phase 2 grid, and unlike the five concept cards it has no on-site `/products/[slug]` page. Clicking the buggerd card on the JigSpec home grid opens `https://buggerd.com` in a new tab; this body is therefore never rendered to a visitor on jigspec.com. It exists for two reasons: schema completeness, so every product file in `src/content/products/` validates against the same Zod shape; and authoring symmetry, so a future "promote a Probe to Shipping" workflow only requires changing the `cta.type` from `interest` to `external` plus adding a `url`, with the body already in place.]
+buggerd is the first product built on the JigSpec runtime. It watches a fleet of repositories for failing test runs, reproduces each failure in an isolated environment, writes a targeted fix, runs the full suite to verify, and opens a pull request through the project's existing review process. No commit lands without a green run. No change bypasses code review.
 
-[Describe in bracketed-placeholder voice what buggerd does — the agentic-CI loop that fixes failing test runs across a fleet of repos before a human is paged. Name the reliability claim explicitly: every fix is grounded in a reproduced failure, every change goes through the project's existing review process, no commits land without a green run. The audience is platform-engineering teams and small ops shops where "the CI is red again on Monday morning" is a familiar pattern. Keep tone honest — describe what the loop does and what its boundaries are, not what it might one day do.]
+The reliability claim is concrete: every fix is grounded in a reproduced failure, not a guess at what the error message implies. The agent doesn't ship a change because the error looks familiar — it ships a change because the test that was failing is now passing and nothing else broke.
 
-[Close with a one-sentence framing of why buggerd is the first card on the JigSpec page: the company sells a recipe for agents that ship; buggerd is the first product that runs that recipe end-to-end against a hard-to-fake substrate (whether the build goes green). Replace this entire body in the copy pass before launch.]
+buggerd is the first card on this page because it's the company's proof of concept for the JigSpec recipe: agents that act on a hard-to-fake substrate, with a falsifiable success criterion baked in, running end-to-end without a human in the loop except at the review gate they already use.
