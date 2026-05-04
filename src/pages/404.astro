@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/global/Nav.astro';
+import Footer from '../components/global/Footer.astro';
+---
+
+<Base
+  title="Not found · JigSpec"
+  description="That page doesn't exist on JigSpec."
+>
+  <Nav />
+  <main class="flex-1">
+    <article class="text-center max-w-3xl mx-auto px-6 py-24 md:py-32">
+      <p class="text-sm uppercase tracking-widest text-accent">404</p>
+      <h1 class="font-display text-5xl md:text-6xl tracking-tight text-fg mt-4 leading-tight">
+        Not found
+      </h1>
+      <p class="mt-6 text-xl italic text-muted">
+        That page doesn't exist on JigSpec.
+      </p>
+      <a
+        href="/"
+        class="mt-12 inline-block text-accent hover:underline"
+        data-event="nav:link_click"
+        data-link-location="404-back-home"
+      >
+        ← Back home
+      </a>
+    </article>
+  </main>
+  <Footer />
+</Base>
