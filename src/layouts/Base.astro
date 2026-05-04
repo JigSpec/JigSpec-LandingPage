@@ -11,6 +11,10 @@ const {
   title = 'JigSpec',
   description = 'JigSpec — agentic AI that ships. The company-level studio behind the .pipe.yaml spec and products like buggerd.',
 } = Astro.props;
+
+// Build canonical URL from the production site origin — Astro 6 exposes the build-time host via Astro.site.
+// Falls back to Astro.url.href on dev/preview where Astro.site may differ from the deploy host.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jigspec.com').href;
 ---
 
 <!doctype html>
@@ -21,6 +25,30 @@ const {
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <!-- Canonical URL (per page; computed from Astro.url.pathname against site origin) -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Sitemap discovery hint -->
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    <!-- Favicon set (PITFALLS item #8 — favicon displays on all 5 browsers) -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph (PITFALLS item #7 — opengraph.xyz debugger gate) -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://jigspec.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card (uses og:image; declared explicitly so Twitter doesn't fall back to summary) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://jigspec.com/og.png" />
 
     <!-- Self-hosted via Astro Fonts API (TECH-05: zero external font CDN) -->
     <Font cssVariable="--font-display" preload />
