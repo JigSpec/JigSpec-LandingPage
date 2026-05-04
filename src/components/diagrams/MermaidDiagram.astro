@@ -1,16 +1,116 @@
 ---
-// Phase 2 placeholder — Phase 4 wires astro-mermaid. Accepts a `code` prop for forward-compat.
+// Phase 4 — Mermaid lazy-load island. DIAGRAM-03 (IntersectionObserver + dynamic import).
+// Phase 3's diagram:view observer at the bottom of this file is the canonical owner
+// of the `diagram:view` event. Phase 4 does NOT call track() in this file.
 interface Props {
-  code?: string;
-  caption?: string;
+  diagramId: 'pipeline-run' | 'ship-to-you';
+  source: string;
+  caption: string;
 }
-const { caption = '[Diagram caption — Phase 4 swaps in real Mermaid render]' } = Astro.props;
+const { diagramId, source, caption } = Astro.props;
+// Server-render a unique DOM id so multiple instances coexist.
+const slotId = `mermaid-${diagramId}-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <figure class="my-12">
-  <div class="border-2 border-dashed border-muted/30 rounded-md p-12 text-center">
-    <p class="font-display text-2xl text-muted">[Diagram — Phase 4]</p>
-    <p class="mt-2 text-sm text-muted">[astro-mermaid lazy-loads here — see Phase 4 plan]</p>
+  <div
+    id={slotId}
+    data-mermaid-source={source}
+    data-diagram-id={diagramId}
+    class="mermaid-slot overflow-x-auto"
+    role="img"
+    aria-label={`Diagram: ${caption}`}
+  >
+    <div class="border-2 border-dashed border-muted/30 rounded-md p-12 text-center">
+      <p class="font-display text-2xl text-muted">Loading diagram…</p>
+    </div>
   </div>
   <figcaption class="mt-3 text-sm text-muted text-center italic">{caption}</figcaption>
 </figure>
+
+<script>
+  // Phase 4 lazy-load: Mermaid gated by IntersectionObserver per slot. DIAGRAM-03.
+  // Source: 03-RESEARCH-diagrams.md § Pattern 1.
+  // NOTE: Phase 3's observer below is the canonical owner of the diagram:view event. This block does NOT fire it.
+
+  // Single shared promise — first slot to intersect triggers the Mermaid import; the rest await the same Promise.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mermaidPromise: Promise<any> | null = null;
+
+  function getMermaid() {
+    if (!mermaidPromise) {
+      mermaidPromise = import('mermaid').then((m) => {
+        const mermaid = m.default;
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: isDark ? 'dark' : 'default',
+          securityLevel: 'strict',
+          fontFamily: 'inherit',
+        });
+        return mermaid;
+      });
+    }
+    return mermaidPromise;
+  }
+
+  async function renderSlot(slot: HTMLElement) {
+    const source = slot.dataset.mermaidSource;
+    const diagramId = slot.dataset.diagramId;
+    if (!source || !diagramId) return;
+    try {
+      const mermaid = await getMermaid();
+      const renderId = `mermaid-render-${slot.id}`;
+      const { svg } = await mermaid.render(renderId, source);
+      slot.innerHTML = svg;
+    } catch (err) {
+      console.error(`[MermaidDiagram] render failed for ${diagramId}:`, err);
+      slot.innerHTML = '<p class="text-sm text-muted text-center italic">Diagram failed to load. <a href="/">Refresh the page</a> to retry.</p>';
+    }
+  }
+
+  function observe(slot: HTMLElement) {
+    if (!('IntersectionObserver' in window)) {
+      // Fallback: render eagerly on browsers without IO (very old; <1% in 2026).
+      renderSlot(slot);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            io.disconnect();
+            renderSlot(entry.target as HTMLElement);
+          }
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+    io.observe(slot);
+  }
+
+  // Register all slots on this page.
+  for (const slot of document.querySelectorAll<HTMLElement>('.mermaid-slot')) {
+    observe(slot);
+  }
+</script>
+
+<script>
+  import { track } from '../../lib/analytics';
+
+  document.querySelectorAll<HTMLElement>('[data-diagram-id]').forEach((el) => {
+    let fired = false;
+    const obs = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting && !fired) {
+          fired = true;
+          track('diagram:view', {
+            diagram_id: el.dataset.diagramId as 'pipeline-run' | 'ship-to-you',
+          });
+          obs.disconnect();
+        }
+      }
+    }, { threshold: 0.5 });
+    obs.observe(el);
+  });
+</script>

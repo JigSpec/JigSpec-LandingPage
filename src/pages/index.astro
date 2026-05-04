@@ -7,6 +7,7 @@ import Hero from '../components/sections/Hero.astro';
 import AgenticAIExplainer from '../components/sections/AgenticAIExplainer.astro';
 import ProductGrid from '../components/sections/ProductGrid.astro';
 import ProblemPitchSection from '../components/sections/ProblemPitchSection.astro';
+import MermaidDiagram from '../components/diagrams/MermaidDiagram.astro';
 
 const products = (await getCollection('products')).sort(
   (a, b) => a.data.order - b.data.order
@@ -21,7 +22,17 @@ const products = (await getCollection('products')).sort(
   <main class="flex-1">
     <Hero />
     <AgenticAIExplainer />
+    <MermaidDiagram
+      diagramId="pipeline-run"
+      source={`flowchart TD\n  A[Input] --> B[Agent]\n  B --> C{{Review Gate}}\n  C -->|Approved| D[Output]`}
+      caption="[Diagram 1 caption — Plan 03-07 fills real content]"
+    />
     <ProductGrid products={products} />
+    <MermaidDiagram
+      diagramId="ship-to-you"
+      source={`flowchart LR\n  A[Problem] --> B[JigSpec]\n  B --> C[Pipeline]\n  C --> D[Result]`}
+      caption="[Diagram 2 caption — Plan 03-07 fills real content]"
+    />
     <ProblemPitchSection />
   </main>
   <Footer />
