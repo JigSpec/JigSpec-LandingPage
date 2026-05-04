@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import Analytics from '../components/global/Analytics.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -20,6 +21,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jigspec.
 <!doctype html>
 <html lang="en" data-theme="auto">
   <head>
+    <Analytics />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
@@ -82,3 +84,31 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jigspec.
     <slot />
   </body>
 </html>
+
+<script>
+  import { track, type EventName } from '../lib/analytics';
+
+  document.addEventListener('click', (event) => {
+    const target = (event.target as Element | null)?.closest('[data-event]');
+    if (!target) return;
+
+    const eventName = target.getAttribute('data-event') as EventName | null;
+    if (!eventName) return;
+
+    const productId = target.getAttribute('data-product-id') ?? undefined;
+    const linkLocation = target.getAttribute('data-link-location') ?? undefined;
+
+    switch (eventName) {
+      case 'card:open':
+      case 'card:cta_external_click':
+        if (productId) track(eventName, { productId });
+        break;
+      case 'nav:link_click':
+      case 'footer:link_click':
+        track(eventName, { location: linkLocation ?? 'unknown' });
+        break;
+      default:
+        if (import.meta.env.DEV) console.warn('[analytics] unhandled delegated event', eventName);
+    }
+  });
+</script>

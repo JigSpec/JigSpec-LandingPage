@@ -95,22 +95,5 @@ const slotId = `mermaid-${diagramId}-${Math.random().toString(36).slice(2, 8)}`;
   }
 </script>
 
-<script>
-  import { track } from '../../lib/analytics';
-
-  document.querySelectorAll<HTMLElement>('[data-diagram-id]').forEach((el) => {
-    let fired = false;
-    const obs = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting && !fired) {
-          fired = true;
-          track('diagram:view', {
-            diagram_id: el.dataset.diagramId as 'pipeline-run' | 'ship-to-you',
-          });
-          obs.disconnect();
-        }
-      }
-    }, { threshold: 0.5 });
-    obs.observe(el);
-  });
-</script>
+<!-- Phase 4 will wire analytics here when diagrams are restored to the page. -->
+<!-- diagram:view tracking is deferred until Phase 4. -->
