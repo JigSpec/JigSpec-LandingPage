@@ -24,14 +24,24 @@ const products = (await getCollection('products')).sort(
     <AgenticAIExplainer />
     <MermaidDiagram
       diagramId="pipeline-run"
-      source={`flowchart TD\n  A[Input] --> B[Agent]\n  B --> C{{Review Gate}}\n  C -->|Approved| D[Output]`}
-      caption="[Diagram 1 caption — Plan 03-07 fills real content]"
+      source={`flowchart TD
+  Input([Input: ticket / claim / draft]) --> Agent[Agent + Tools]
+  Agent --> Gate1{{Review Gate 1<br/>spec match?}}
+  Gate1 -->|fail| Agent
+  Gate1 -->|pass| Step2[Sub-task]
+  Step2 --> Gate2{{Review Gate 2<br/>output valid?}}
+  Gate2 -->|fail| Step2
+  Gate2 -->|pass| Output([Output])`}
+      caption="Each step runs against a review gate before it ships — agents that pass your existing CI before they touch production."
     />
     <ProductGrid products={products} />
     <MermaidDiagram
       diagramId="ship-to-you"
-      source={`flowchart LR\n  A[Problem] --> B[JigSpec]\n  B --> C[Pipeline]\n  C --> D[Result]`}
-      caption="[Diagram 2 caption — Plan 03-07 fills real content]"
+      source={`flowchart LR
+  Spec[.pipe.yaml spec] --> Run[JigSpec runtime runs the spec]
+  Run --> Review[Review gates verify output]
+  Review --> Ship[Product ships to you]`}
+      caption="One spec, one runtime, the same review-gate discipline behind every product on this page."
     />
     <ProblemPitchSection />
   </main>
