@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "honesty-audit": "if grep -riE 'trusted by|fortune 500|industry-leading|world-class|best-in-class|cutting-edge|revolutionary|game-changing|unparalleled|enterprise-grade' src/ ; then echo '\\nHonesty audit FAILED — see hits above. See CONTENT-08 + Pitfall 4 in 02-RESEARCH.md.' && exit 1 ; else echo 'Honesty audit PASSED.' ; fi"
+    "honesty-audit": "if grep -riE 'trusted by|fortune 500|industry-leading|world-class|best-in-class|cutting-edge|revolutionary|game-changing|unparalleled|enterprise-grade' src/ ; then echo '\\nHonesty audit FAILED — see hits above. See CONTENT-08 + Pitfall 4 in 02-RESEARCH.md.' && exit 1 ; else echo 'Honesty audit PASSED.' ; fi",
+    "analytics-audit": "if grep -rEn '(window\\.)?posthog\\.capture\\(' src/ | grep -v 'src/lib/analytics.ts' | grep -v '// ALLOW'; then echo '\\nAnalytics audit FAILED — direct posthog.capture call found outside analytics.ts. See ANALYTICS-02 + Pattern 2 in 03-RESEARCH.md.' && exit 1; else echo 'Analytics audit PASSED.'; fi"
   },
   "dependencies": {
     "astro": "^6.1.10",
