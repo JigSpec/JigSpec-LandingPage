@@ -14,8 +14,7 @@
     "analytics-audit": "if grep -rEn '(window\\.)?posthog\\.capture\\(' src/ | grep -v 'src/lib/analytics.ts' | grep -v '// ALLOW'; then echo '\\nAnalytics audit FAILED — direct posthog.capture call found outside analytics.ts. See ANALYTICS-02 + Pattern 2 in 03-RESEARCH.md.' && exit 1; else echo 'Analytics audit PASSED.'; fi"
   },
   "dependencies": {
-    "astro": "^6.1.10",
-    "mermaid": "^11.14.0"
+    "astro": "^6.1.10"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

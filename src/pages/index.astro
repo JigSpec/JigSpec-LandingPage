@@ -7,8 +7,6 @@ import Hero from '../components/sections/Hero.astro';
 import AgenticAIExplainer from '../components/sections/AgenticAIExplainer.astro';
 import ProductGrid from '../components/sections/ProductGrid.astro';
 import ProblemPitchSection from '../components/sections/ProblemPitchSection.astro';
-import MermaidDiagram from '../components/diagrams/MermaidDiagram.astro';
-
 const products = (await getCollection('products')).sort(
   (a, b) => a.data.order - b.data.order
 );
@@ -22,27 +20,7 @@ const products = (await getCollection('products')).sort(
   <main class="flex-1">
     <Hero />
     <AgenticAIExplainer />
-    <MermaidDiagram
-      diagramId="pipeline-run"
-      source={`flowchart TD
-  Input([Input: ticket / claim / draft]) --> Agent[Agent + Tools]
-  Agent --> Gate1{{Review Gate 1<br/>spec match?}}
-  Gate1 -->|fail| Agent
-  Gate1 -->|pass| Step2[Sub-task]
-  Step2 --> Gate2{{Review Gate 2<br/>output valid?}}
-  Gate2 -->|fail| Step2
-  Gate2 -->|pass| Output([Output])`}
-      caption="Each step runs against a review gate before it ships — agents that pass your existing CI before they touch production."
-    />
     <ProductGrid products={products} />
-    <MermaidDiagram
-      diagramId="ship-to-you"
-      source={`flowchart LR
-  Spec[.pipe.yaml spec] --> Run[JigSpec runtime runs the spec]
-  Run --> Review[Review gates verify output]
-  Review --> Ship[Product ships to you]`}
-      caption="One spec, one runtime, the same review-gate discipline behind every product on this page."
-    />
     <ProblemPitchSection />
   </main>
   <Footer />

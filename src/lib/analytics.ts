@@ -20,7 +20,7 @@ export type EventName =
   | 'form:abandon'
   | 'form:submit'
   | 'problem_pitch:submit'
-  | 'diagram:view'
+
   | 'educator:scroll_complete'
   | 'footer:link_click';
 
@@ -35,7 +35,7 @@ export type EventProps = {
   'form:abandon': { productId?: string; form: 'interest' | 'problem-pitch'; field?: string };
   'form:submit': { productId: string; survey_id: string };
   'problem_pitch:submit': { has_email: boolean };
-  'diagram:view': { diagram_id: 'pipeline-run' | 'ship-to-you' };
+
   'educator:scroll_complete': Record<string, never>; // no props
   'footer:link_click': { location: string };       // e.g. 'docs', 'github', 'email'
 };
