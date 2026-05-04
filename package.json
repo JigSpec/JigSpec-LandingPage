@@ -13,13 +13,13 @@
     "honesty-audit": "if grep -riE 'trusted by|fortune 500|industry-leading|world-class|best-in-class|cutting-edge|revolutionary|game-changing|unparalleled|enterprise-grade' src/ ; then echo '\\nHonesty audit FAILED — see hits above. See CONTENT-08 + Pitfall 4 in 02-RESEARCH.md.' && exit 1 ; else echo 'Honesty audit PASSED.' ; fi"
   },
   "dependencies": {
-    "astro": "^6.1.10"
+    "astro": "^6.1.10",
+    "mermaid": "^11.14.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.2",
     "@tailwindcss/vite": "^4.2.4",
-    "mermaid": "^11.14.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^5.9.3"
   }
